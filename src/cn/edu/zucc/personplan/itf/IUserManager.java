@@ -1,6 +1,6 @@
 package cn.edu.zucc.personplan.itf;
 
-import cn.edu.zucc.personplan.model.BeanUser;
+import cn.edu.zucc.personplan.model.UserInfo;
 import cn.edu.zucc.personplan.util.BaseException;
 
 public interface IUserManager {
@@ -15,7 +15,7 @@ public interface IUserManager {
 	 * @return
 	 * @throws BaseException
 	 */
-	public BeanUser reg(String userid, String pwd,String pwd2) throws BaseException;
+	public UserInfo reg(String userid, String pwd, String pwd2) throws BaseException;
 	/**
 	 * 登陆
 	 * 1、如果用户不存在或者密码错误，抛出一个异常
@@ -25,7 +25,7 @@ public interface IUserManager {
 	 * @return
 	 * @throws BaseException
 	 */
-	public BeanUser login(String userid,String pwd)throws BaseException;
+	public UserInfo login(String userid,String pwd)throws BaseException;
 	/**
 	 * 修改密码
 	 * 如果没有成功修改，则抛出异常
@@ -34,5 +34,5 @@ public interface IUserManager {
 	 * @param newPwd  新密码
 	 * @param newPwd2 重复输入的新密码
 	 */
-	public void changePwd(BeanUser user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
+	public void changePwd(UserInfo user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
 }

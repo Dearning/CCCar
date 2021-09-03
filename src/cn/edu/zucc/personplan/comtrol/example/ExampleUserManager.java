@@ -70,8 +70,6 @@ public class ExampleUserManager implements IUserManager {
 		}
 	}
 
-
-
 	@Override
 	public BeanUser login(String userid, String pwd) throws BaseException {
 

@@ -104,11 +104,13 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.dataTableStep.repaint();
 	}
 	public FrmMain(){
-		
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
-		this.setTitle("个人计划管理系统");
+		this.setTitle("CC租车管理系统");
+		//登录开始
+
 		dlgLogin=new FrmLogin(this,"登陆",true);
 		dlgLogin.setVisible(true);
+
 	    //菜单
 	    this.menu_plan.add(this.menuItem_AddPlan); this.menuItem_AddPlan.addActionListener(this);
 	    this.menu_plan.add(this.menuItem_DeletePlan); this.menuItem_DeletePlan.addActionListener(this);
