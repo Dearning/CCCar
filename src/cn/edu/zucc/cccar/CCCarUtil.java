@@ -17,4 +17,6 @@ public class CCCarUtil {
 
 
 	public static ICarManager carManager = new CarManager();
+
+	public static ICategoryManager categoryManager = new CategoryManager();
 }

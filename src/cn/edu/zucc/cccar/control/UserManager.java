@@ -17,7 +17,7 @@ public class UserManager implements IUserManager {
     }
 
     @Override
-    public void changePwd(BeanUser user, String oldPwd, String newPwd, String newPwd2) throws BaseException {
+    public void changePwd(UserInfo user, String oldPwd, String newPwd, String newPwd2) throws BaseException {
 
     }
 }

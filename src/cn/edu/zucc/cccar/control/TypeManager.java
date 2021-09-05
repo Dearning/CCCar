@@ -13,6 +13,41 @@ import java.util.List;
 
 public class TypeManager implements ITypeManager {
     @Override
+    public List<CarType> loadTypes(Integer netId, Integer categoryId) throws BaseException {
+        List<CarType> result = new ArrayList<CarType>();
+        Connection connection =null;
+        try {
+            connection= DBUtil.getConnection();
+            String sqlString ="select type_id,type_name from carinfo where net_id = ? and category_id =? ";
+            java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
+            pStatement.setInt(1,netId);
+            pStatement.setInt(2,categoryId);
+            java.sql.ResultSet resultSet = pStatement.executeQuery();
+            while(resultSet.next()){
+                CarType carType = new CarType();
+                carType.setTypeId(resultSet.getInt(1));
+
+                carType.setTypeName(resultSet.getString(2));
+//                System.out.println(carType);
+                result.add(carType);
+            }
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }finally {
+            if(connection!=null) {
+                try {
+                    connection.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
     public List<CarType> loadTypes(int netIdx) throws BaseException {
         List<CarType> result = new ArrayList<CarType>();
         Connection connection =null;

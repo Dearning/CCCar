@@ -9,15 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import cn.edu.zucc.cccar.CCCarUtil;
@@ -62,22 +54,37 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JMenuItem  menuItem_DeleteUser=new JMenuItem("删除用户");
 	//table
 	DefaultTableModel tblNetModel=new DefaultTableModel();
+	DefaultTableModel tblTypesModel=new DefaultTableModel();
+	DefaultTableModel tblCategory = new DefaultTableModel();
 	DefaultTableModel tblTypeModel=new DefaultTableModel();
 	DefaultTableModel tblCarModel=new DefaultTableModel();
 
+
 	private JTable dataTableNet=new JTable(tblNetModel);
+	private JTable dataTblTypes = new JTable(tblTypesModel);
+	private JTable dataTblCategory = new JTable(tblCategory);
 	private JTable dataTableType=new JTable(tblTypeModel);
 	private JTable dataTblCarInfo=new JTable(tblCarModel);
 
 	//panel
 	private JPanel statusBar = new JPanel();
+	private JPanel west = new JPanel(new BorderLayout());
+	private JPanel center = new JPanel(new BorderLayout());
+
+	private JPanel categoryPanel = new JPanel(new BorderLayout());
+	private JPanel typePanel = new JPanel(new BorderLayout());
+	private JPanel east = new JPanel(new BorderLayout());
+
 
 	//list in table
 	List<NetInfo> allNets=null;
+	List<CarCategory> carCategories=null;
 	List<CarType> carTypes=null;
 	List<CarInfo> carInfos = null;
 
+
 	private NetInfo currentNet=null;
+	private CarCategory currentCategory=null;
 	private CarType currentType = null;
 	private CarInfo currentCar =null;
 
@@ -85,6 +92,9 @@ public class FrmMain extends JFrame implements ActionListener {
 	//
 	private Object tblNetTitle[]=NetInfo.tableTitles;
 	private Object tblNetData[][];
+
+	private Object tblCategoryTitle[]=CarCategory.tableTitles;
+	private Object tblCategoryData[][];
 	private Object tblTypeTitle[]=CarType.tableTitles;
 	private Object tblTypeData[][];
 	private Object tblCarTitle[]=CarInfo.tableTitles;
@@ -96,7 +106,6 @@ public class FrmMain extends JFrame implements ActionListener {
 		//登录开始
 		dlgLogin = new FrmLogin(this, "登陆", true);
 		dlgLogin.setVisible(true);
-
 		{
 		this.menu_net.add(this.menuItem_AddNet); this.menuItem_AddNet.addActionListener(this);
 		this.menu_net.add(this.menuItem_DeleteNet); this.menuItem_DeleteNet.addActionListener(this);
@@ -130,19 +139,31 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 
 		this.setJMenuBar(menuBar);
-		this.getContentPane().add(new JScrollPane(this.dataTableNet), BorderLayout.WEST);
+
+		west.setBorder(BorderFactory.createTitledBorder("网点"));
+		west.add(new JScrollPane(this.dataTableNet));
+		west.setPreferredSize(new Dimension(256,0));
+		this.getContentPane().add(west, BorderLayout.WEST);
 		this.dataTableNet.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int i = FrmMain.this.dataTableNet.getSelectedRow();
 				if(i<0) return;
 //				System.out.println(i);
-				FrmMain.this.reloadTypeTable(i);
+				FrmMain.this.reloadCategoryTable(i);
 			}
 		});
 		this.reloadNetTable();
 
-		this.getContentPane().add(new JScrollPane(this.dataTableType), BorderLayout.CENTER);
+		this.dataTblCategory.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i = FrmMain.this.dataTblCategory.getSelectedRow();
+				if(i<0) return;
+//				System.out.println(i);
+				FrmMain.this.reloadTypeTable(i);
+			}
+		});
 		this.dataTableType.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -152,17 +173,30 @@ public class FrmMain extends JFrame implements ActionListener {
 				FrmMain.this.reloadCarTable(i);
 			}
 		});
-		FrmMain.this.reloadTypeTable(0);
 
-		this.getContentPane().add(new JScrollPane(this.dataTblCarInfo), BorderLayout.EAST);
+		categoryPanel.setBorder(BorderFactory.createTitledBorder("车类"));
+		typePanel.setBorder(BorderFactory.createTitledBorder("车型"));
+		east.setBorder(BorderFactory.createTitledBorder("车辆信息"));
 
-		this.getContentPane().add(new JScrollPane(this.dataTblCarInfo), BorderLayout.SOUTH);
+		categoryPanel.setPreferredSize(new Dimension(256,0));
+		typePanel.setPreferredSize(new Dimension(256,0));
+		center.setPreferredSize(new Dimension(512,0));
+		east.setPreferredSize(new Dimension(600,0));
 
+		categoryPanel.add(new JScrollPane(this.dataTblCategory));
+		typePanel.add(new JScrollPane(this.dataTableType));
+		center.add(categoryPanel,BorderLayout.WEST);
+		center.add(typePanel,BorderLayout.CENTER);
+		east.add(new JScrollPane(this.dataTblCarInfo));
+		this.getContentPane().add(center, BorderLayout.CENTER);
+		this.getContentPane().add(east, BorderLayout.EAST);
+
+		//下面的状态栏
 		statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		JLabel label=new JLabel("您好! "+CCCarUtil.currentUserName);//修改成   您好！+登陆用户名
 		statusBar.add(label);
 		this.getContentPane().add(statusBar,BorderLayout.SOUTH);
-		
+
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				System.exit(0);
@@ -176,19 +210,10 @@ public class FrmMain extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.menuItem_AddNet){
+			FrmAddNet dlg=new FrmAddNet(this,"添加网点",true);
+			dlg.setVisible(true);
+		} else if(e.getSource()==this.menuItem_AddNet){
 			FrmAddNet dlg=new FrmAddNet(this,"添加计划",true);
-			dlg.setVisible(true);
-		} else if(e.getSource()==this.menuItem_DeleteNet){
-			FrmAddPlan dlg=new FrmAddPlan(this,"添加计划",true);
-			dlg.setVisible(true);
-		} else if(e.getSource()==this.menuItem_AddCategory){
-			FrmAddPlan dlg=new FrmAddPlan(this,"添加计划",true);
-			dlg.setVisible(true);
-		} else if(e.getSource()==this.menuItem_DeleteCategory){
-			FrmAddPlan dlg=new FrmAddPlan(this,"添加计划",true);
-			dlg.setVisible(true);
-		} else if(e.getSource()==this.menuItem_AddCar){
-			FrmAddPlan dlg=new FrmAddPlan(this,"添加计划",true);
 			dlg.setVisible(true);
 		}
 		//TODO 上列表的动作
@@ -211,11 +236,31 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.dataTableNet.validate();
 		this.dataTableNet.repaint();
 	}
-	private void reloadTypeTable(int netIdx){
+	private void reloadCategoryTable(int netIdx){
+		//TODO
 		if(netIdx<0) return;
 		currentNet=allNets.get(netIdx);
 		try {
-			carTypes=CCCarUtil.typeManager.loadTypes(currentNet.getNetId());
+			carCategories=CCCarUtil.categoryManager.loadTypes(currentNet.getNetId());
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		tblCategoryData =new Object[carCategories.size()][CarCategory.tableTitles.length];
+		for(int i=0;i<carCategories.size();i++){
+			for(int j=0;j<CarType.tableTitles.length;j++)
+				tblCategoryData[i][j]=carCategories.get(i).getCell(j);
+		}
+		tblCategory.setDataVector(tblCategoryData,tblCategoryTitle);
+		this.dataTblCategory.validate();
+		this.dataTblCategory.repaint();
+	}
+	private void reloadTypeTable(int categoryIdx){
+		//TODO
+		if(categoryIdx<0) return;
+		currentCategory=carCategories.get(categoryIdx);
+		try {
+			carTypes=CCCarUtil.typeManager.loadTypes(currentNet.getNetId(),currentCategory.getCategoryId());
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
@@ -241,7 +286,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		tblCarData =new Object[carInfos.size()][CarInfo.tableTitles.length];
 		for(int i=0;i<carInfos.size();i++){
-			for(int j=0;j<CarType.tableTitles.length;j++)
+			for(int j=0;j<CarInfo.tableTitles.length;j++)
 				tblCarData[i][j]=carInfos.get(i).getCell(j);
 		}
 		tblCarModel.setDataVector(tblCarData,tblCarTitle);

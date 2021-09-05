@@ -23,7 +23,10 @@ public class CarInfo implements Serializable {
         else if(col==1) return netId.toString();
         else if(col==2) return typeId.toString();
         else if(col==3) return license;
-        else if(col==4) return carStatus.toString();
+        else if(col==4) {
+            if(carStatus==1) return "ÔÚ¿â";
+            else return "×â½èÖÐ";
+        }
         else return "";
     }
     public CarInfo() {

@@ -35,5 +35,5 @@ public interface IUserManager {
      * @param newPwd  新密码
      * @param newPwd2 重复输入的新密码
      */
-    public void changePwd(BeanUser user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
+    public void changePwd(UserInfo user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
 }
