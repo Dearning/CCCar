@@ -22,4 +22,5 @@ public class CCCarUtil {
 
     public static IDiscountManager discountManager = new DiscountManager();
     public static ICouponManager couponManager = new CouponManager();
+    public static IOrderManager orderManager = new OrderManager();
 }

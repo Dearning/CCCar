@@ -61,6 +61,8 @@ public class FrmMain extends JFrame implements ActionListener {
 	DefaultTableModel tblCategory = new DefaultTableModel();
 	DefaultTableModel tblTypeModel=new DefaultTableModel();
 	DefaultTableModel tblCarModel=new DefaultTableModel();
+	DefaultTableModel tblOrderModel=new DefaultTableModel();
+
 
 
 	private JTable dataTableNet=new JTable(tblNetModel);
@@ -68,6 +70,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JTable dataTblCategory = new JTable(tblCategory);
 	private JTable dataTableType=new JTable(tblTypeModel);
 	private JTable dataTblCarInfo=new JTable(tblCarModel);
+	private JTable dataTblOrder=new JTable(tblOrderModel);
 
 	//panel
 	private JPanel statusBar = new JPanel();
@@ -77,22 +80,33 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JPanel categoryPanel = new JPanel(new BorderLayout());
 	private JPanel typePanel = new JPanel(new BorderLayout());
 	private JPanel orderCtrl = new JPanel(new BorderLayout());
+	private JPanel south = new JPanel(new BorderLayout());
+	private JPanel northOfsouth = new JPanel(new BorderLayout());
+	private JPanel up = new JPanel(new GridLayout(1,4));
 
+	private JPanel southOfsouth = new JPanel(new FlowLayout() );
+
+	private JButton btnSelectCoupon = new JButton("选择优惠券");
+	private JButton btnOrderAdd = new JButton("生成订单");
+	private JButton btnOrderDelete = new JButton("删除订单");
+	private JButton btnOrderComplete = new JButton("完成订单");
 
 	//list in table
 	List<NetInfo> allNets=null;
 	List<CarCategory> carCategories=null;
 	List<CarType> carTypes=null;
 	List<CarInfo> carInfos = null;
+	List<TblOrder> orders= null;
 
 
 	private NetInfo currentNet=null;
 	private CarCategory currentCategory=null;
 	private CarType currentType = null;
 	private CarInfo currentCar =null;
-
+	private TblOrder currentOrder =null;
 
 	//
+
 	private Object tblNetTitle[]=NetInfo.tableTitles;
 	private Object tblNetData[][];
 	private Object tblCategoryTitle[]=CarCategory.tableTitles;
@@ -101,6 +115,8 @@ public class FrmMain extends JFrame implements ActionListener {
 	private Object tblTypeData[][];
 	private Object tblCarTitle[]=CarInfo.tableTitles;
 	private Object tblCarData[][];
+	private Object tblOrderTitle[]=TblOrder.tableTitles;
+	private Object tblOrderData[][];
 
 	public FrmMain(){
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -109,52 +125,57 @@ public class FrmMain extends JFrame implements ActionListener {
 		dlgLogin = new DlgLogin(this, "登陆", true);
 		dlgLogin.setVisible(true);
 		{
+		this.btnSelectCoupon.addActionListener(this);
+
+		this.btnOrderAdd.addActionListener(this);
+		this.btnOrderComplete.addActionListener(this);
+		this.btnOrderDelete.addActionListener(this);
+
 		this.menu_net.add(this.menuItem_AddNet); this.menuItem_AddNet.addActionListener(this);
 		this.menu_net.add(this.menuItem_DeleteNet); this.menuItem_DeleteNet.addActionListener(this);
-//		this.menu_categories.add(this.menuItem_AddCategory); this.menuItem_AddCategory.addActionListener(this);
-//		this.menu_categories.add(this.menuItem_DeleteCategory); this.menuItem_DeleteCategory.addActionListener(this);
-//		this.menu_type.add(this.menuItem_AddType); this.menuItem_AddType.addActionListener(this);
-//		this.menu_type.add(this.menuItem_DeleteType); this.menuItem_DeleteType.addActionListener(this);
-//		this.menu_car.add(this.menuItem_AddCar); this.menuItem_AddCar.addActionListener(this);
-//		this.menu_car.add(this.menuItem_DeleteCar); this.menuItem_DeleteCar.addActionListener(this);
+
 		this.menu_discount.add(this.menuItem_Discount); this.menuItem_Discount.addActionListener(this);
 		this.menu_discount.add(this.menuItem_Coupon); this.menuItem_Coupon.addActionListener(this);
-//		this.menu_coupon.add(this.menuItem_AddCoupon); this.menuItem_AddCoupon.addActionListener(this);
-//		this.menu_coupon.add(this.menuItem_DeleteCoupon); this.menuItem_DeleteCoupon.addActionListener(this);
+
 		this.menu_scrap.add(this.menuItem_AddScrap); this.menuItem_AddScrap.addActionListener(this);
 		this.menu_scrap.add(this.menuItem_DeleteScrap); this.menuItem_DeleteScrap.addActionListener(this);
+
 		this.menu_order.add(this.menuItem_AddOrder); this.menuItem_AddOrder.addActionListener(this);
 		this.menu_order.add(this.menuItem_DeleteOrder); this.menuItem_DeleteOrder.addActionListener(this);
+
 		this.menu_user.add(this.menuItem_AddUser); this.menuItem_AddUser.addActionListener(this);
 		this.menu_user.add(this.menuItem_DeleteUser); this.menuItem_DeleteUser.addActionListener(this);
+
 		this.menu_types.add(this.menuItem_types);this.menuItem_types.addActionListener(this);
 		}
 		{
 		menuBar.add(menu_net);
-//		menuBar.add(menu_categories);
-//		menuBar.add(menu_type);
-//		menuBar.add(menu_car);
 		menuBar.add(menu_types);
 		menuBar.add(menu_discount);
 		menuBar.add(menu_scrap);
 		menuBar.add(menu_order);
 		menuBar.add(menu_user);
 		}
-
+		this.dataTblOrder.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i = FrmMain.this.dataTblOrder.getSelectedRow();
+				if(i<0) return;
+				currentOrder=orders.get(i);
+				FrmMain.this.reloadOrderTable();
+			}
+		});
 		this.dataTableNet.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int i = FrmMain.this.dataTableNet.getSelectedRow();
 				if(i<0) return;
-
-//				System.out.println(i);
-
 				currentNet=allNets.get(i);
 				FrmMain.this.reloadCategoryTable(i);
 			}
 		});
 		this.reloadNetTable();
-
+		reloadOrderTable();
 		this.dataTblCategory.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -173,7 +194,6 @@ public class FrmMain extends JFrame implements ActionListener {
 				if(i<0) return;
 //				System.out.println(i);
 				currentType=carTypes.get(i);
-
 				FrmMain.this.reloadCarTable(i);
 			}
 		});
@@ -183,7 +203,6 @@ public class FrmMain extends JFrame implements ActionListener {
 				int i = FrmMain.this.dataTblCarInfo.getSelectedRow();
 				if(i<0) return;
 				currentCar = carInfos.get(i);
-
 			}
 		});
 
@@ -193,6 +212,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		categoryPanel.setBorder(BorderFactory.createTitledBorder("车类"));
 		typePanel.setBorder(BorderFactory.createTitledBorder("车型"));
 		east.setBorder(BorderFactory.createTitledBorder("车辆信息"));
+		northOfsouth.setBorder(BorderFactory.createTitledBorder("订单管理"));
 
 		categoryPanel.setPreferredSize(new Dimension(256,0));
 		typePanel.setPreferredSize(new Dimension(256,0));
@@ -206,17 +226,29 @@ public class FrmMain extends JFrame implements ActionListener {
 		center.add(categoryPanel,BorderLayout.WEST);
 		center.add(typePanel,BorderLayout.CENTER);
 		east.add(new JScrollPane(this.dataTblCarInfo));
+		southOfsouth.add(btnSelectCoupon);
+		southOfsouth.add(btnOrderAdd);
+		southOfsouth.add(btnOrderComplete);
+		southOfsouth.add(btnOrderDelete);
+//		south.setPreferredSize(new Dimension(0,300));
+		northOfsouth.add(new JScrollPane(this.dataTblOrder));
+		south.add(southOfsouth,BorderLayout.NORTH);
+		south.add(northOfsouth,BorderLayout.SOUTH);
 
-		this.getContentPane().add(west, BorderLayout.WEST);
-		this.getContentPane().add(center, BorderLayout.CENTER);
-		this.getContentPane().add(east, BorderLayout.EAST);
+		up.add(west);
+		up.add(categoryPanel);
+		up.add(typePanel);
+		up.add(east);
+		this.getContentPane().add(up, BorderLayout.CENTER);
+		this.getContentPane().add(south,BorderLayout.SOUTH);
 
 
 		//下面的状态栏
-		statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-		JLabel label=new JLabel("您好! "+CCCarUtil.currentUserName);//修改成   您好！+登陆用户名
-		statusBar.add(label);
-		this.getContentPane().add(statusBar,BorderLayout.SOUTH);
+//
+//		statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		JLabel label=new JLabel("您好! "+CCCarUtil.currentUserName);//修改成   您好！+登陆用户名
+//		statusBar.add(label);
+//		this.getContentPane().add(statusBar,BorderLayout.SOUTH);
 
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
@@ -225,6 +257,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		});
 		this.setVisible(true);
 	}
+
 
 
 
@@ -263,6 +296,24 @@ public class FrmMain extends JFrame implements ActionListener {
 		//TODO 上列表的动作
 	}
 
+	private void reloadOrderTable() {
+		try {
+			orders=CCCarUtil.orderManager.loadAll();
+		} catch (BaseException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		//TODO 网点信息为空？
+		tblOrderData =  new Object[orders.size()][TblOrder.tableTitles.length];
+		for(int i=0;i<orders.size();i++){
+			for(int j=0;j<TblOrder.tableTitles.length;j++)
+				tblOrderData[i][j]=orders.get(i).getCell(j);
+		}
+		tblOrderModel.setDataVector(tblOrderData,tblOrderTitle);
+		this.dataTblOrder.validate();
+		this.dataTblOrder.repaint();
+	}
+
 	private void reloadNetTable(){
 		try {
 			allNets=CCCarUtil.netManager.loadAll();
@@ -292,7 +343,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		}
 		tblCategoryData =new Object[carCategories.size()][CarCategory.tableTitles.length];
 		for(int i=0;i<carCategories.size();i++){
-			for(int j=0;j<CarType.tableTitles.length;j++)
+			for(int j=0;j<CarCategory.tableTitles.length;j++)
 				tblCategoryData[i][j]=carCategories.get(i).getCell(j);
 		}
 		tblCategory.setDataVector(tblCategoryData,tblCategoryTitle);

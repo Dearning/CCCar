@@ -12,7 +12,7 @@ public class NetInfo implements Serializable {
     private String address;
     private String phone;
 
-    public static final String[] tableTitles={"编号","网点名称"};
+    public static final String[] tableTitles={"编号","网点名称","城市","地址","电话"};
     public NetInfo() {
     }
     public String getCell(int col){

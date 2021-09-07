@@ -7,18 +7,18 @@ public class CarType implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-//    public static final String[] tableTitles={"编号","名称","类别","品牌","排量","排档","座位数","价格","图片"};
+    public static final String[] tableTitles={"编号","名称","类别","品牌","排量","排档","座位数","价格","图片"};
 
-    public static final String[] tableTitles={"车型编号","车型名称"};
+//    public static final String[] tableTitles={"车型编号","车型名称"};
     public String getCell(int col){
         if(col==0) return typeId.toString();
         else if(col==1) return typeName;
-        else if(col==2) return categoryId.toString();
-        else if(col==3) return displacement.toString();
-        else if(col==4) return gear.toString();
-        else if(col==5) return seatNum.toString();
-        else if(col==6) return price.toString();
-        else if(col==7) return pic;//TODO 图片怎么搞
+        else if(col==2) return categoryId==null? null:categoryId.toString();
+        else if(col==3) return displacement==null? null:displacement.toString();
+        else if(col==4) return gear==null? null:gear.toString();
+        else if(col==5) return seatNum==null? null:seatNum.toString();
+        else if(col==6) return price==null? null:price.toString();
+        else if(col==7) return pic==null? null:pic;//TODO 图片怎么搞
         else return "";
     }
     private Integer typeId;

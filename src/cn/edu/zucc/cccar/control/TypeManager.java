@@ -19,7 +19,7 @@ public class TypeManager implements ITypeManager {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
-            String sqlString ="select type_id,type_name from carinfo where category_id =? group by type_id";
+            String sqlString ="select * from carinfo where category_id =? group by type_id";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
             pStatement.setInt(1,categoryId);
             java.sql.ResultSet resultSet = pStatement.executeQuery();
@@ -28,6 +28,13 @@ public class TypeManager implements ITypeManager {
                 carType.setTypeId(resultSet.getInt(1));
 
                 carType.setTypeName(resultSet.getString(2));
+                carType.setCategoryId(resultSet.getInt(3));
+                carType.setBrand(resultSet.getString(4));
+                carType.setDisplacement(resultSet.getBigDecimal(5));
+                carType.setGear(resultSet.getInt(6));
+                carType.setSeatNum(resultSet.getInt(7));
+                carType.setPrice(resultSet.getBigDecimal(8));
+                carType.setPic(resultSet.getString(9));
 //                System.out.println(carType);
                 result.add(carType);
             }
@@ -149,16 +156,22 @@ public class TypeManager implements ITypeManager {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
-            String sqlString ="select type_id,type_name from carinfo where net_id = ? and category_id =? group by type_id";
+            String sqlString ="select * from carinfo where category_id =? group by type_id";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
-            pStatement.setInt(1,netId);
-            pStatement.setInt(2,categoryId);
+            pStatement.setInt(1,categoryId);
             java.sql.ResultSet resultSet = pStatement.executeQuery();
             while(resultSet.next()){
                 CarType carType = new CarType();
                 carType.setTypeId(resultSet.getInt(1));
 
                 carType.setTypeName(resultSet.getString(2));
+                carType.setCategoryId(resultSet.getInt(3));
+                carType.setBrand(resultSet.getString(4));
+                carType.setDisplacement(resultSet.getBigDecimal(5));
+                carType.setGear(resultSet.getInt(6));
+                carType.setSeatNum(resultSet.getInt(7));
+                carType.setPrice(resultSet.getBigDecimal(8));
+                carType.setPic(resultSet.getString(9));
 //                System.out.println(carType);
                 result.add(carType);
             }

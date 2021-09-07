@@ -6,62 +6,46 @@ import java.util.Date;
 public class TblOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-    * order_id
-    */
+    public static final String[] tableTitles={"订单编号","优惠券编号","借车网点","还车网点","借车日期","还车日期","借车总时长","初始金额","总金额","订单状态"};
+    public String getCell(int col){
+        if(col==0) return orderId.toString();
+        else if(col==1) return couponId == 0? "未使用优惠券":couponId.toString();
+        else if(col==2) return netBorrowId.toString();
+        else if(col==3) return netReturnId.toString();
+        else if(col==4) return borrowdate.toString();
+        else if(col==5) return returndate==null? "未还车":returndate.toString();
+        else if(col==6) return borrowduration==null? null:borrowduration.toString();
+        else if(col==7) return returndate==null? null:initialAmount.toString();
+        else if(col==8) return returndate==null? null:totalamount.toString();
+        else if(col==9) {
+            if(orderStatus==0)return "未完成";
+            else if(orderStatus == 1) return "已完成";
+            else if(orderStatus == 2) return "";
+            else return"";
+        }
+        else return "";
+    }
     private Integer orderId;
-
-    /**
-    * coupon_id
-    */
     private Integer couponId;
-
-    /**
-    * net_borrow_id
-    */
     private Integer netBorrowId;
-
-    /**
-    * net_return_id
-    */
+    private Integer carTypeId;
     private Integer netReturnId;
-
-    /**
-    * user_id
-    */
     private Integer userId;
-
-    /**
-    * borrowdate
-    */
     private Date borrowdate;
-
-    /**
-    * returndate
-    */
     private Date returndate;
-
-    /**
-    * borrowduration
-    */
     private Date borrowduration;
-
-    /**
-    * initial_amount
-    */
     private BigDecimal initialAmount;
-
-    /**
-    * totalamount
-    */
     private BigDecimal totalamount;
-
-    /**
-    * order_status
-    */
     private Integer orderStatus;
 
+
+    public Integer getCarTypeId() {
+        return carTypeId;
+    }
+
+    public void setCarTypeId(Integer carTypeId) {
+        this.carTypeId = carTypeId;
+    }
 
     public TblOrder() {
     }
