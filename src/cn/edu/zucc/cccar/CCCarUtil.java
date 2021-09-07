@@ -20,4 +20,6 @@ public class CCCarUtil {
 
 	public static ICategoryManager categoryManager = new CategoryManager();
 
+    public static IDiscountManager discountManager = new DiscountManager();
+    public static ICouponManager couponManager = new CouponManager();
 }

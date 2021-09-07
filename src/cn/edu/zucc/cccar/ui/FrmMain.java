@@ -20,7 +20,7 @@ import cn.edu.zucc.cccar.util.BaseException;
 
 public class FrmMain extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	FrmLogin dlgLogin = null;
+	DlgLogin dlgLogin = null;
 	// menu
 	private JMenuBar menuBar=new JMenuBar();
 
@@ -28,27 +28,27 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JMenu menu_types = new JMenu("车管理界面");
 	private JMenuItem  menuItem_types =new JMenuItem("车类车型车管理界面");
 
-	//	private JMenu menu_categories=new JMenu("车类别管理");
+//	private JMenu menu_categories=new JMenu("车类别管理");
 //	private JMenu menu_type=new JMenu("车型统计");
 //	private JMenu menu_car=new JMenu("车信息管理");
-	private JMenu menu_discount=new JMenu("促销管理");
-	private JMenu menu_coupon=new JMenu("优惠券管理");
-	private JMenu menu_scrap=new JMenu("报废管理");
-	private JMenu menu_order=new JMenu("订单管理");
-	private JMenu menu_user=new JMenu("用户管理");
+//	private JMenu menu_coupon=new JMenu("优惠券管理");
 
-	private JMenuItem  menuItem_AddNet=new JMenuItem("新增网点");
-	private JMenuItem  menuItem_DeleteNet=new JMenuItem("删除网点");
 //	private JMenuItem  menuItem_AddCategory=new JMenuItem("新增车类别");
 //	private JMenuItem  menuItem_DeleteCategory=new JMenuItem("删除车类别");
 //	private JMenuItem  menuItem_AddType=new JMenuItem("新增车类");
 //	private JMenuItem  menuItem_DeleteType=new JMenuItem("删除车类");
 //	private JMenuItem  menuItem_AddCar=new JMenuItem("新增车");
 //	private JMenuItem  menuItem_DeleteCar=new JMenuItem("删除车");
-	private JMenuItem  menuItem_AddDiscount=new JMenuItem("新增促销");
-	private JMenuItem  menuItem_DeleteDiscount=new JMenuItem("删除促销");
-	private JMenuItem  menuItem_AddCoupon=new JMenuItem("新增优惠券");
-	private JMenuItem  menuItem_DeleteCoupon=new JMenuItem("删除优惠券");
+
+	private JMenu menu_discount=new JMenu("优惠管理");
+	private JMenu menu_scrap=new JMenu("报废管理");
+	private JMenu menu_order=new JMenu("订单管理");
+	private JMenu menu_user=new JMenu("用户管理");
+
+	private JMenuItem  menuItem_AddNet=new JMenuItem("新增网点");
+	private JMenuItem  menuItem_DeleteNet=new JMenuItem("删除网点");
+	private JMenuItem  menuItem_Discount=new JMenuItem("促销管理");
+	private JMenuItem  menuItem_Coupon=new JMenuItem("优惠券管理");
 	private JMenuItem  menuItem_AddScrap=new JMenuItem("新增报废");
 	private JMenuItem  menuItem_DeleteScrap=new JMenuItem("删除报废");
 	private JMenuItem  menuItem_AddOrder=new JMenuItem("新增订单");
@@ -76,6 +76,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JPanel east = new JPanel(new BorderLayout());
 	private JPanel categoryPanel = new JPanel(new BorderLayout());
 	private JPanel typePanel = new JPanel(new BorderLayout());
+	private JPanel orderCtrl = new JPanel(new BorderLayout());
 
 
 	//list in table
@@ -105,7 +106,7 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		this.setTitle("CC租车管理系统");
 		//登录开始
-		dlgLogin = new FrmLogin(this, "登陆", true);
+		dlgLogin = new DlgLogin(this, "登陆", true);
 		dlgLogin.setVisible(true);
 		{
 		this.menu_net.add(this.menuItem_AddNet); this.menuItem_AddNet.addActionListener(this);
@@ -116,10 +117,10 @@ public class FrmMain extends JFrame implements ActionListener {
 //		this.menu_type.add(this.menuItem_DeleteType); this.menuItem_DeleteType.addActionListener(this);
 //		this.menu_car.add(this.menuItem_AddCar); this.menuItem_AddCar.addActionListener(this);
 //		this.menu_car.add(this.menuItem_DeleteCar); this.menuItem_DeleteCar.addActionListener(this);
-		this.menu_discount.add(this.menuItem_AddDiscount); this.menuItem_AddDiscount.addActionListener(this);
-		this.menu_discount.add(this.menuItem_DeleteDiscount); this.menuItem_DeleteDiscount.addActionListener(this);
-		this.menu_coupon.add(this.menuItem_AddCoupon); this.menuItem_AddCoupon.addActionListener(this);
-		this.menu_coupon.add(this.menuItem_DeleteCoupon); this.menuItem_DeleteCoupon.addActionListener(this);
+		this.menu_discount.add(this.menuItem_Discount); this.menuItem_Discount.addActionListener(this);
+		this.menu_discount.add(this.menuItem_Coupon); this.menuItem_Coupon.addActionListener(this);
+//		this.menu_coupon.add(this.menuItem_AddCoupon); this.menuItem_AddCoupon.addActionListener(this);
+//		this.menu_coupon.add(this.menuItem_DeleteCoupon); this.menuItem_DeleteCoupon.addActionListener(this);
 		this.menu_scrap.add(this.menuItem_AddScrap); this.menuItem_AddScrap.addActionListener(this);
 		this.menu_scrap.add(this.menuItem_DeleteScrap); this.menuItem_DeleteScrap.addActionListener(this);
 		this.menu_order.add(this.menuItem_AddOrder); this.menuItem_AddOrder.addActionListener(this);
@@ -135,7 +136,6 @@ public class FrmMain extends JFrame implements ActionListener {
 //		menuBar.add(menu_car);
 		menuBar.add(menu_types);
 		menuBar.add(menu_discount);
-		menuBar.add(menu_coupon);
 		menuBar.add(menu_scrap);
 		menuBar.add(menu_order);
 		menuBar.add(menu_user);
@@ -252,6 +252,13 @@ public class FrmMain extends JFrame implements ActionListener {
 			dlg.setVisible(true);
 			this.reloadNetTable();
 
+		} else if(e.getSource()==this.menuItem_Discount){
+			FrmDiscount frmDiscount=new FrmDiscount();
+			frmDiscount.setVisible(true);
+
+		} else if(e.getSource()==this.menuItem_Coupon){
+			FrmCoupon frmCoupon=new FrmCoupon();
+			frmCoupon.setVisible(true);
 		}
 		//TODO 上列表的动作
 	}

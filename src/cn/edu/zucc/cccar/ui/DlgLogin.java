@@ -15,7 +15,7 @@ import cn.edu.zucc.cccar.CCCarUtil;
 import cn.edu.zucc.cccar.util.BaseException;
 
 
-public class FrmLogin extends JDialog implements ActionListener {
+public class DlgLogin extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
 
@@ -35,7 +35,7 @@ public class FrmLogin extends JDialog implements ActionListener {
 	private JRadioButton jrSuperEmployee = new JRadioButton("管理员", true); //初始化选择这个
 	private ButtonGroup btnGroup = new ButtonGroup();//绑定n个单选为n选一
 
-	public FrmLogin(Frame f, String s, boolean b) {
+	public DlgLogin(Frame f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
@@ -130,7 +130,7 @@ public class FrmLogin extends JDialog implements ActionListener {
 		} else if (e.getSource() == this.btnCancel) {
 			System.exit(0);
 		} else if(e.getSource()==this.btnRegister){
-			FrmRegister dlg=new FrmRegister(this,"注册",true);
+			DlgRegister dlg=new DlgRegister(this,"注册",true);
 			dlg.setVisible(true);
 		}
 	}

@@ -128,7 +128,7 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==this.menuItem_AddCategory){
-            FrmAddCategory dlg=new FrmAddCategory(this,"添加车类",true);
+            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
             dlg.setVisible(true);
         } else if(e.getSource()==this.menuItem_DeleteCategory){
             if(this.currentCategory==null) {
@@ -173,10 +173,10 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
                 return;
             }
         }else if(e.getSource()==this.menuItem_AddCategory){
-            FrmAddCategory dlg=new FrmAddCategory(this,"添加车类",true);
+            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
             dlg.setVisible(true);
         }else if(e.getSource()==this.menuItem_AddCategory){
-            FrmAddCategory dlg=new FrmAddCategory(this,"添加车类",true);
+            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
             dlg.setVisible(true);
         }
     }

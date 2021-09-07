@@ -7,39 +7,24 @@ public class DiscountInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-    * dicount_id
-    */
+    public static final String[] tableTitles={"促销编号","网点编号","车类编号","促销折扣","促销数量","开始时间","结束时间"};
+
+    public String getCell(int col){
+        if(col==0) return dicountId.toString();
+        else if(col==1) return netId.toString();
+        else if(col==2) return typeId.toString();
+        else if(col==3) return discountamount.toString();
+        else if(col==4) return discountnum.toString();
+        else if(col==5) return startdate.toString();
+        else if(col==6) return enddate.toString();
+        else return "";
+    }
     private Integer dicountId;
-
-    /**
-    * net_id
-    */
     private Integer netId;
-
-    /**
-    * type_id
-    */
     private Integer typeId;
-
-    /**
-    * discountamount
-    */
     private Integer discountamount;
-
-    /**
-    * discountnum
-    */
     private Integer discountnum;
-
-    /**
-    * startdate
-    */
     private Date startdate;
-
-    /**
-    * enddate
-    */
     private Date enddate;
 
 

@@ -13,7 +13,7 @@ import cn.edu.zucc.cccar.CCCarUtil;
 import cn.edu.zucc.cccar.model.UserInfo;
 import cn.edu.zucc.cccar.util.BaseException;
 
-public class FrmRegister extends JDialog implements ActionListener {
+public class DlgRegister extends JDialog implements ActionListener {
 	private JPanel toolBar = new JPanel();
 	private JPanel workPane = new JPanel();
 	private Button btnOk = new Button("зЂВс");
@@ -32,7 +32,7 @@ public class FrmRegister extends JDialog implements ActionListener {
 	private JTextField edtUserId = new JTextField(20);
 	private JPasswordField edtPwd = new JPasswordField(20);
 	private JPasswordField edtPwd2 = new JPasswordField(20);
-	public FrmRegister(Dialog f, String s, boolean b) {
+	public DlgRegister(Dialog f, String s, boolean b) {
 		super(f, s, b);
 		toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		toolBar.add(this.btnOk);
