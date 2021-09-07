@@ -19,4 +19,10 @@ public interface ICarManager {
      * @throws BaseException
      */
     public List<CarInfo> loadCars(Integer netId, Integer typeId) throws BaseException;
+
+    void add(CarInfo carInfo) throws BaseException;
+
+    void deleteCar(CarInfo currentCar) throws BaseException;
+
+    List<CarInfo> loadCars(Integer typeId)throws BaseException;
 }

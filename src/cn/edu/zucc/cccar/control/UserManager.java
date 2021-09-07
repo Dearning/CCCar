@@ -1,7 +1,6 @@
 package cn.edu.zucc.cccar.control;
 
 import cn.edu.zucc.cccar.itf.IUserManager;
-import cn.edu.zucc.cccar.model.BeanUser;
 import cn.edu.zucc.cccar.model.UserInfo;
 import cn.edu.zucc.cccar.util.BaseException;
 

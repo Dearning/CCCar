@@ -25,9 +25,12 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JMenuBar menuBar=new JMenuBar();
 
 	private JMenu menu_net=new JMenu("网点管理");
-	private JMenu menu_categories=new JMenu("车类别管理");
-	private JMenu menu_type=new JMenu("车型统计");
-	private JMenu menu_car=new JMenu("车信息管理");
+	private JMenu menu_types = new JMenu("车管理界面");
+	private JMenuItem  menuItem_types =new JMenuItem("车类车型车管理界面");
+
+	//	private JMenu menu_categories=new JMenu("车类别管理");
+//	private JMenu menu_type=new JMenu("车型统计");
+//	private JMenu menu_car=new JMenu("车信息管理");
 	private JMenu menu_discount=new JMenu("促销管理");
 	private JMenu menu_coupon=new JMenu("优惠券管理");
 	private JMenu menu_scrap=new JMenu("报废管理");
@@ -36,12 +39,12 @@ public class FrmMain extends JFrame implements ActionListener {
 
 	private JMenuItem  menuItem_AddNet=new JMenuItem("新增网点");
 	private JMenuItem  menuItem_DeleteNet=new JMenuItem("删除网点");
-	private JMenuItem  menuItem_AddCategory=new JMenuItem("新增车类别");
-	private JMenuItem  menuItem_DeleteCategory=new JMenuItem("删除车类别");
-	private JMenuItem  menuItem_AddType=new JMenuItem("新增车类");
-	private JMenuItem  menuItem_DeleteNType=new JMenuItem("删除车类");
-	private JMenuItem  menuItem_AddCar=new JMenuItem("新增车");
-	private JMenuItem  menuItem_DeleteCar=new JMenuItem("删除车");
+//	private JMenuItem  menuItem_AddCategory=new JMenuItem("新增车类别");
+//	private JMenuItem  menuItem_DeleteCategory=new JMenuItem("删除车类别");
+//	private JMenuItem  menuItem_AddType=new JMenuItem("新增车类");
+//	private JMenuItem  menuItem_DeleteType=new JMenuItem("删除车类");
+//	private JMenuItem  menuItem_AddCar=new JMenuItem("新增车");
+//	private JMenuItem  menuItem_DeleteCar=new JMenuItem("删除车");
 	private JMenuItem  menuItem_AddDiscount=new JMenuItem("新增促销");
 	private JMenuItem  menuItem_DeleteDiscount=new JMenuItem("删除促销");
 	private JMenuItem  menuItem_AddCoupon=new JMenuItem("新增优惠券");
@@ -70,10 +73,9 @@ public class FrmMain extends JFrame implements ActionListener {
 	private JPanel statusBar = new JPanel();
 	private JPanel west = new JPanel(new BorderLayout());
 	private JPanel center = new JPanel(new BorderLayout());
-
+	private JPanel east = new JPanel(new BorderLayout());
 	private JPanel categoryPanel = new JPanel(new BorderLayout());
 	private JPanel typePanel = new JPanel(new BorderLayout());
-	private JPanel east = new JPanel(new BorderLayout());
 
 
 	//list in table
@@ -92,7 +94,6 @@ public class FrmMain extends JFrame implements ActionListener {
 	//
 	private Object tblNetTitle[]=NetInfo.tableTitles;
 	private Object tblNetData[][];
-
 	private Object tblCategoryTitle[]=CarCategory.tableTitles;
 	private Object tblCategoryData[][];
 	private Object tblTypeTitle[]=CarType.tableTitles;
@@ -109,12 +110,12 @@ public class FrmMain extends JFrame implements ActionListener {
 		{
 		this.menu_net.add(this.menuItem_AddNet); this.menuItem_AddNet.addActionListener(this);
 		this.menu_net.add(this.menuItem_DeleteNet); this.menuItem_DeleteNet.addActionListener(this);
-		this.menu_categories.add(this.menuItem_AddCategory); this.menuItem_AddCategory.addActionListener(this);
-		this.menu_categories.add(this.menuItem_DeleteCategory); this.menuItem_DeleteCategory.addActionListener(this);
-		this.menu_type.add(this.menuItem_AddType); this.menuItem_AddType.addActionListener(this);
-		this.menu_type.add(this.menuItem_DeleteNType); this.menuItem_DeleteNType.addActionListener(this);
-		this.menu_car.add(this.menuItem_AddCar); this.menuItem_AddCar.addActionListener(this);
-		this.menu_car.add(this.menuItem_DeleteCar); this.menuItem_DeleteCar.addActionListener(this);
+//		this.menu_categories.add(this.menuItem_AddCategory); this.menuItem_AddCategory.addActionListener(this);
+//		this.menu_categories.add(this.menuItem_DeleteCategory); this.menuItem_DeleteCategory.addActionListener(this);
+//		this.menu_type.add(this.menuItem_AddType); this.menuItem_AddType.addActionListener(this);
+//		this.menu_type.add(this.menuItem_DeleteType); this.menuItem_DeleteType.addActionListener(this);
+//		this.menu_car.add(this.menuItem_AddCar); this.menuItem_AddCar.addActionListener(this);
+//		this.menu_car.add(this.menuItem_DeleteCar); this.menuItem_DeleteCar.addActionListener(this);
 		this.menu_discount.add(this.menuItem_AddDiscount); this.menuItem_AddDiscount.addActionListener(this);
 		this.menu_discount.add(this.menuItem_DeleteDiscount); this.menuItem_DeleteDiscount.addActionListener(this);
 		this.menu_coupon.add(this.menuItem_AddCoupon); this.menuItem_AddCoupon.addActionListener(this);
@@ -125,12 +126,14 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.menu_order.add(this.menuItem_DeleteOrder); this.menuItem_DeleteOrder.addActionListener(this);
 		this.menu_user.add(this.menuItem_AddUser); this.menuItem_AddUser.addActionListener(this);
 		this.menu_user.add(this.menuItem_DeleteUser); this.menuItem_DeleteUser.addActionListener(this);
+		this.menu_types.add(this.menuItem_types);this.menuItem_types.addActionListener(this);
 		}
 		{
 		menuBar.add(menu_net);
-		menuBar.add(menu_categories);
-		menuBar.add(menu_type);
-		menuBar.add(menu_car);
+//		menuBar.add(menu_categories);
+//		menuBar.add(menu_type);
+//		menuBar.add(menu_car);
+		menuBar.add(menu_types);
 		menuBar.add(menu_discount);
 		menuBar.add(menu_coupon);
 		menuBar.add(menu_scrap);
@@ -138,18 +141,15 @@ public class FrmMain extends JFrame implements ActionListener {
 		menuBar.add(menu_user);
 		}
 
-		this.setJMenuBar(menuBar);
-
-		west.setBorder(BorderFactory.createTitledBorder("网点"));
-		west.add(new JScrollPane(this.dataTableNet));
-		west.setPreferredSize(new Dimension(256,0));
-		this.getContentPane().add(west, BorderLayout.WEST);
 		this.dataTableNet.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int i = FrmMain.this.dataTableNet.getSelectedRow();
 				if(i<0) return;
+
 //				System.out.println(i);
+
+				currentNet=allNets.get(i);
 				FrmMain.this.reloadCategoryTable(i);
 			}
 		});
@@ -161,6 +161,8 @@ public class FrmMain extends JFrame implements ActionListener {
 				int i = FrmMain.this.dataTblCategory.getSelectedRow();
 				if(i<0) return;
 //				System.out.println(i);
+
+				currentCategory=carCategories.get(i);
 				FrmMain.this.reloadTypeTable(i);
 			}
 		});
@@ -170,26 +172,45 @@ public class FrmMain extends JFrame implements ActionListener {
 				int i = FrmMain.this.dataTableType.getSelectedRow();
 				if(i<0) return;
 //				System.out.println(i);
+				currentType=carTypes.get(i);
+
 				FrmMain.this.reloadCarTable(i);
 			}
 		});
+		this.dataTblCarInfo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i = FrmMain.this.dataTblCarInfo.getSelectedRow();
+				if(i<0) return;
+				currentCar = carInfos.get(i);
 
+			}
+		});
+
+		this.setJMenuBar(menuBar);
+
+		west.setBorder(BorderFactory.createTitledBorder("网点"));
 		categoryPanel.setBorder(BorderFactory.createTitledBorder("车类"));
 		typePanel.setBorder(BorderFactory.createTitledBorder("车型"));
 		east.setBorder(BorderFactory.createTitledBorder("车辆信息"));
 
 		categoryPanel.setPreferredSize(new Dimension(256,0));
 		typePanel.setPreferredSize(new Dimension(256,0));
+		west.setPreferredSize(new Dimension(256,0));
 		center.setPreferredSize(new Dimension(512,0));
 		east.setPreferredSize(new Dimension(600,0));
 
 		categoryPanel.add(new JScrollPane(this.dataTblCategory));
 		typePanel.add(new JScrollPane(this.dataTableType));
+		west.add(new JScrollPane(this.dataTableNet));
 		center.add(categoryPanel,BorderLayout.WEST);
 		center.add(typePanel,BorderLayout.CENTER);
 		east.add(new JScrollPane(this.dataTblCarInfo));
+
+		this.getContentPane().add(west, BorderLayout.WEST);
 		this.getContentPane().add(center, BorderLayout.CENTER);
 		this.getContentPane().add(east, BorderLayout.EAST);
+
 
 		//下面的状态栏
 		statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -210,11 +231,27 @@ public class FrmMain extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.menuItem_AddNet){
-			FrmAddNet dlg=new FrmAddNet(this,"添加网点",true);
+			DlgAddNet dlg=new DlgAddNet(this,"添加网点",true);
 			dlg.setVisible(true);
-		} else if(e.getSource()==this.menuItem_AddNet){
-			FrmAddNet dlg=new FrmAddNet(this,"添加计划",true);
+			this.reloadNetTable();
+		} else if(e.getSource()==this.menuItem_DeleteNet){
+			if(this.currentNet==null) {
+				JOptionPane.showMessageDialog(null, "请选择网点", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			try {
+				CCCarUtil.netManager.deleteNet(this.currentNet);
+
+				this.reloadNetTable();
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		} else if(e.getSource()==this.menuItem_types){
+			FrmCatTypeCars dlg=new FrmCatTypeCars();
 			dlg.setVisible(true);
+			this.reloadNetTable();
+
 		}
 		//TODO 上列表的动作
 	}
@@ -222,6 +259,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	private void reloadNetTable(){
 		try {
 			allNets=CCCarUtil.netManager.loadAll();
+
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;
@@ -239,7 +277,6 @@ public class FrmMain extends JFrame implements ActionListener {
 	private void reloadCategoryTable(int netIdx){
 		//TODO
 		if(netIdx<0) return;
-		currentNet=allNets.get(netIdx);
 		try {
 			carCategories=CCCarUtil.categoryManager.loadTypes(currentNet.getNetId());
 		} catch (BaseException e) {
@@ -258,7 +295,6 @@ public class FrmMain extends JFrame implements ActionListener {
 	private void reloadTypeTable(int categoryIdx){
 		//TODO
 		if(categoryIdx<0) return;
-		currentCategory=carCategories.get(categoryIdx);
 		try {
 			carTypes=CCCarUtil.typeManager.loadTypes(currentNet.getNetId(),currentCategory.getCategoryId());
 		} catch (BaseException e) {
@@ -277,7 +313,6 @@ public class FrmMain extends JFrame implements ActionListener {
 	private void reloadCarTable(int carTypeIdx) {
 
 		if(carTypeIdx<0) return;
-		currentType=carTypes.get(carTypeIdx);
 		try {
 			carInfos=CCCarUtil.carManager.loadCars(currentNet.getNetId(),currentType.getTypeId());
 		} catch (BaseException e) {

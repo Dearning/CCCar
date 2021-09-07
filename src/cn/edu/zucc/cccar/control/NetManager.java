@@ -20,6 +20,57 @@ public class NetManager implements INetManager {
     }
 
     @Override
+    public void deleteNet(NetInfo currentNet) throws BaseException {
+        Connection connection =null;
+        try {
+            connection= DBUtil.getConnection();
+
+            String sqlString =null;
+            java.sql.PreparedStatement pStatement = null;
+            ResultSet resultSet =null;
+
+            sqlString ="select * from carinfo where  net_id= ?";
+            pStatement = connection.prepareStatement(sqlString);
+            pStatement.setInt(1,currentNet.getNetId());
+            resultSet = pStatement.executeQuery();
+            if(resultSet.next()) throw new BusinessException("存在属于网点的车辆,无法删除,请先删除相关车辆");
+            pStatement.close();
+            resultSet.close();
+
+            sqlString ="select * from net_info where net_id = ?";
+            pStatement = connection.prepareStatement(sqlString);
+            pStatement.setInt(1,currentNet.getNetId());
+            resultSet = pStatement.executeQuery();
+            if(resultSet.next()) {
+                resultSet.close();
+
+                pStatement.close();
+                sqlString ="delete from net_info where net_id = ?";
+                pStatement = connection.prepareStatement(sqlString);
+                pStatement.setInt(1,currentNet.getNetId());
+                pStatement.execute();
+                pStatement.close();
+            } else  {
+                System.out.println("未找到需要删除网点");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            throw new DbException(e);
+        }finally {
+            if(connection!=null) {
+                try {
+                    connection.close();
+                } catch (Exception e2) {
+                    // TODO: handle exception
+                    e2.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
     public void add(NetInfo net) throws BaseException {
         Connection connection =null;
         try {

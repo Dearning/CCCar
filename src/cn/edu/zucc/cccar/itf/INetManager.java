@@ -19,4 +19,6 @@ public interface INetManager {
     void addPlan(String name) throws BaseException;
 
     void add(NetInfo net) throws BaseException;
+
+    void deleteNet(NetInfo currentNet) throws BaseException;
 }

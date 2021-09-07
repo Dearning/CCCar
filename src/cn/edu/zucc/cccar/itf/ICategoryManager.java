@@ -15,5 +15,11 @@ public interface ICategoryManager {
      */
     public List<CarCategory> loadTypes(Integer netId) throws BaseException;
 
+    public void add(CarCategory carCategory) throws BaseException;
+
+    void deleteCategory(CarCategory currentCategory)  throws BaseException;
+
+    List<CarCategory> loadAll()throws BaseException;
+
     ;
 }

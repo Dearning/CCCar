@@ -24,12 +24,21 @@ public class CarType implements Serializable {
     private Integer typeId;
     private Integer categoryId;
     private String typeName;
+
+    private String brand;
     private BigDecimal displacement;
     private Integer gear;
     private Integer seatNum;
     private BigDecimal price;
     private String pic;
 
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
     public CarType() {
     }

@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FrmAddNet extends JDialog implements ActionListener {
+public class DlgAddNet extends JDialog implements ActionListener {
     public NetInfo netInfo=null;
     private JPanel toolBar = new JPanel();
     private JPanel workPane = new JPanel();
@@ -26,7 +26,7 @@ public class FrmAddNet extends JDialog implements ActionListener {
     private JTextField edtCity = new JTextField(20);
     private JTextField edtAddress = new JTextField(20);
     private JTextField edtPhone = new JTextField(20);
-    public FrmAddNet(JFrame f, String s, boolean b) {
+    public DlgAddNet(JFrame f, String s, boolean b) {
         super(f, s, b);
         toolBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
         toolBar.add(btnOk);
