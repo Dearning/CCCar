@@ -41,7 +41,7 @@ public class FrmCoupon extends JFrame implements ActionListener {
 
 
     public FrmCoupon() {
-
+        this.setTitle("”≈ª›»Øπ‹¿Ì");
         this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.menu_Coupon.add(this.menuItem_add); this.menuItem_add.addActionListener(this);
         this.menu_Coupon.add(this.menuItem_delete); this.menuItem_delete.addActionListener(this);

@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface IOrderManager {
     List<TblOrder> loadAll() throws BaseException;
+
+    void addOrder(TblOrder order)throws BaseException;
+
+    void deleteOrder(Integer orderId) throws BaseException;
+
+    void completeOrder(Integer orderId)throws BaseException;
 }

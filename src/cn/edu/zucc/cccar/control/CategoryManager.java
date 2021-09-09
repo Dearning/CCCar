@@ -143,7 +143,8 @@ public class CategoryManager implements ICategoryManager {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
-            String sqlString ="select category_id,category_name from carinfo where net_id = ? group by category_id";
+            String sqlString ="select category_id,category_name,category_Description from type_cate_car_net " +
+                    "where net_id = ?  group by category_id";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
             pStatement.setInt(1,netId);
             java.sql.ResultSet resultSet = pStatement.executeQuery();
@@ -151,6 +152,7 @@ public class CategoryManager implements ICategoryManager {
                 CarCategory carCategory = new CarCategory();
                 carCategory.setCategoryId(resultSet.getInt(1));
                 carCategory.setCategoryName(resultSet.getString(2));
+                carCategory.setCategoryDescription(resultSet.getString(3));
                 result.add(carCategory);
             }
             return result;

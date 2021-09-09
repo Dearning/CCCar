@@ -5,33 +5,21 @@ import java.util.Date;
 public class Scrap implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String[] tableTitles={"报废编号","报废员工id","车辆id","报废时间","描述"};
+    public String getCell(int col){
+        if(col==0) return scrapId.toString();
+        else if(col==1) return employeeId.toString();
+        else if(col==2) return carId.toString();
+        else if(col==3) return scraptime.toString();
+        else if(col==4) return description;
 
-    /**
-    * scrap_id
-    */
+        else return "";
+    }
     private Integer scrapId;
-
-    /**
-    * employee_id
-    */
     private Integer employeeId;
-
-    /**
-    * car_id
-    */
     private Integer carId;
-
-    /**
-    * scraptime
-    */
     private Date scraptime;
-
-    /**
-    * description
-    */
     private String description;
-
-
     public Scrap() {
     }
 

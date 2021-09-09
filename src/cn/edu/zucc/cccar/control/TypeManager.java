@@ -19,14 +19,14 @@ public class TypeManager implements ITypeManager {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
-            String sqlString ="select * from carinfo where category_id =? group by type_id";
+            String sqlString ="select type_Id, type_Name, category_Id, brand, displacement, gear, seat_num, price, " +
+                    "pic from type_cate_car_net  where category_id =? group by type_id\n";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
             pStatement.setInt(1,categoryId);
             java.sql.ResultSet resultSet = pStatement.executeQuery();
             while(resultSet.next()){
                 CarType carType = new CarType();
                 carType.setTypeId(resultSet.getInt(1));
-
                 carType.setTypeName(resultSet.getString(2));
                 carType.setCategoryId(resultSet.getInt(3));
                 carType.setBrand(resultSet.getString(4));
@@ -156,9 +156,12 @@ public class TypeManager implements ITypeManager {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
-            String sqlString ="select * from carinfo where category_id =? group by type_id";
+            String sqlString ="select c.type_Id, c.type_Name,c.category_Id,c.brand," +
+                    "c.displacement,c.gear,c.seat_num,c.price,c.pic from carallinfo c " +
+                    "where c.category_Id =? and net_id = ? group by type_Id";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
             pStatement.setInt(1,categoryId);
+            pStatement.setInt(2,netId);
             java.sql.ResultSet resultSet = pStatement.executeQuery();
             while(resultSet.next()){
                 CarType carType = new CarType();
@@ -191,37 +194,37 @@ public class TypeManager implements ITypeManager {
         }
     }
 
-    @Override
-    public List<CarType> loadTypes(int netIdx) throws BaseException {
-        List<CarType> result = new ArrayList<CarType>();
-        Connection connection =null;
-        try {
-            connection= DBUtil.getConnection();
-            String sqlString ="select type_id,type_name from carandtype where net_id = ? group by type_id";
-            java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
-            pStatement.setInt(1,netIdx);
-            java.sql.ResultSet resultSet = pStatement.executeQuery();
-            while(resultSet.next()){
-                CarType carType = new CarType();
-                carType.setTypeId(resultSet.getInt(1));
-
-                carType.setTypeName(resultSet.getString(2));
-                System.out.println(carType);
-                result.add(carType);
-            }
-            return result;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new DbException(e);
-        }finally {
-            if(connection!=null) {
-                try {
-                    connection.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            }
-        }
-    }
+//    @Override
+//    public List<CarType> loadTypes(int netIdx) throws BaseException {
+//        List<CarType> result = new ArrayList<CarType>();
+//        Connection connection =null;
+//        try {
+//            connection= DBUtil.getConnection();
+//            String sqlString ="select type_id,type_name from carandtype where net_id = ? group by type_id";
+//            java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
+//            pStatement.setInt(1,netIdx);
+//            java.sql.ResultSet resultSet = pStatement.executeQuery();
+//            while(resultSet.next()){
+//                CarType carType = new CarType();
+//                carType.setTypeId(resultSet.getInt(1));
+//
+//                carType.setTypeName(resultSet.getString(2));
+//                System.out.println(carType);
+//                result.add(carType);
+//            }
+//            return result;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new DbException(e);
+//        }finally {
+//            if(connection!=null) {
+//                try {
+//                    connection.close();
+//                } catch (Exception e2) {
+//                    e2.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 }

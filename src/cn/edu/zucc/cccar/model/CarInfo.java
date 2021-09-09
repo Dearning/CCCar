@@ -16,7 +16,7 @@ public class CarInfo implements Serializable {
     private Integer netId;
     private Integer typeId;
     private String license;
-    private Integer carStatus; //0 不在网点,工作中, 1 在网点空闲
+    private Integer carStatus; //0 不在网点,工作中, 1 在网点空闲 -1 报废了
 
     public String getCell(int col){
         if(col==0) return carId.toString();
@@ -25,7 +25,9 @@ public class CarInfo implements Serializable {
         else if(col==3) return license;
         else if(col==4) {
             if(carStatus==1) return "在库";
-            else return "租借中";
+            else if(carStatus==0)return "租借中";
+            else if(carStatus == -1)return "报废";
+            else return"其他";
         }
         else return "";
     }

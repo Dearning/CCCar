@@ -41,6 +41,7 @@ public class FrmDiscount extends JFrame implements ActionListener {
 
 
     public FrmDiscount() {
+        this.setTitle("¥Ÿœ˙π‹¿Ì");
 
         this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.menu_Discount.add(this.menuItem_add); this.menuItem_add.addActionListener(this);

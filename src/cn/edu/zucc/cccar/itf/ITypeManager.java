@@ -14,7 +14,6 @@ public interface ITypeManager {
      * @throws BaseException
      */
     public void add(CarType carType) throws BaseException ;
-    public List<CarType> loadTypes(int netIdx) throws BaseException;
 
     public List<CarType> loadTypes(Integer netId, Integer categoryId) throws BaseException;
 

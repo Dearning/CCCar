@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import cn.edu.zucc.cccar.CCCarUtil;
 import cn.edu.zucc.cccar.model.*;
 import cn.edu.zucc.cccar.util.BaseException;
-
+import cn.edu.zucc.cccar.util.BusinessException;
 
 
 public class FrmMain extends JFrame implements ActionListener {
@@ -86,11 +86,15 @@ public class FrmMain extends JFrame implements ActionListener {
 
 	private JPanel southOfsouth = new JPanel(new FlowLayout() );
 
+	private JButton btnSelectReturnNet= new JButton("选择归还网点");
 	private JButton btnSelectCoupon = new JButton("选择优惠券");
 	private JButton btnOrderAdd = new JButton("生成订单");
 	private JButton btnOrderDelete = new JButton("删除订单");
 	private JButton btnOrderComplete = new JButton("完成订单");
 
+
+	JLabel lbReturnNet = new JLabel("归还网点:");
+	JLabel lbCoupon = new JLabel("已选择优惠券:");
 	//list in table
 	List<NetInfo> allNets=null;
 	List<CarCategory> carCategories=null;
@@ -104,6 +108,8 @@ public class FrmMain extends JFrame implements ActionListener {
 	private CarType currentType = null;
 	private CarInfo currentCar =null;
 	private TblOrder currentOrder =null;
+	private Coupon currentCoupon = null;
+	private NetInfo currentReturnNet = null;
 
 	//
 
@@ -118,6 +124,8 @@ public class FrmMain extends JFrame implements ActionListener {
 	private Object tblOrderTitle[]=TblOrder.tableTitles;
 	private Object tblOrderData[][];
 
+
+
 	public FrmMain(){
 		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		this.setTitle("CC租车管理系统");
@@ -125,11 +133,6 @@ public class FrmMain extends JFrame implements ActionListener {
 		dlgLogin = new DlgLogin(this, "登陆", true);
 		dlgLogin.setVisible(true);
 		{
-		this.btnSelectCoupon.addActionListener(this);
-
-		this.btnOrderAdd.addActionListener(this);
-		this.btnOrderComplete.addActionListener(this);
-		this.btnOrderDelete.addActionListener(this);
 
 		this.menu_net.add(this.menuItem_AddNet); this.menuItem_AddNet.addActionListener(this);
 		this.menu_net.add(this.menuItem_DeleteNet); this.menuItem_DeleteNet.addActionListener(this);
@@ -147,6 +150,11 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.menu_user.add(this.menuItem_DeleteUser); this.menuItem_DeleteUser.addActionListener(this);
 
 		this.menu_types.add(this.menuItem_types);this.menuItem_types.addActionListener(this);
+		this.btnSelectCoupon.addActionListener(this);
+		this.btnSelectReturnNet.addActionListener(this);
+		this.btnOrderAdd.addActionListener(this);
+		this.btnOrderDelete.addActionListener(this);
+		this.btnOrderComplete.addActionListener(this);
 		}
 		{
 		menuBar.add(menu_net);
@@ -205,6 +213,14 @@ public class FrmMain extends JFrame implements ActionListener {
 				currentCar = carInfos.get(i);
 			}
 		});
+		this.dataTblOrder.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int i = FrmMain.this.dataTblOrder.getSelectedRow();
+				if(i<0) return;
+				currentOrder = orders.get(i);
+			}
+		});
 
 		this.setJMenuBar(menuBar);
 
@@ -226,14 +242,21 @@ public class FrmMain extends JFrame implements ActionListener {
 		center.add(categoryPanel,BorderLayout.WEST);
 		center.add(typePanel,BorderLayout.CENTER);
 		east.add(new JScrollPane(this.dataTblCarInfo));
+		//下框放入订单
+
+		southOfsouth.add(lbReturnNet);
+		southOfsouth.add(CCCarUtil.lbChangeReturnNet);
+		southOfsouth.add(lbCoupon);
+		southOfsouth.add(CCCarUtil.lbChangeCoupon);
+		southOfsouth.add(btnSelectReturnNet);
 		southOfsouth.add(btnSelectCoupon);
 		southOfsouth.add(btnOrderAdd);
 		southOfsouth.add(btnOrderComplete);
 		southOfsouth.add(btnOrderDelete);
-//		south.setPreferredSize(new Dimension(0,300));
 		northOfsouth.add(new JScrollPane(this.dataTblOrder));
 		south.add(southOfsouth,BorderLayout.NORTH);
 		south.add(northOfsouth,BorderLayout.SOUTH);
+		northOfsouth.setPreferredSize(new Dimension(0,300));
 
 		up.add(west);
 		up.add(categoryPanel);
@@ -241,8 +264,6 @@ public class FrmMain extends JFrame implements ActionListener {
 		up.add(east);
 		this.getContentPane().add(up, BorderLayout.CENTER);
 		this.getContentPane().add(south,BorderLayout.SOUTH);
-
-
 		//下面的状态栏
 //
 //		statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -258,16 +279,14 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
-
-
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.menuItem_AddNet){
 			DlgAddNet dlg=new DlgAddNet(this,"添加网点",true);
 			dlg.setVisible(true);
 			this.reloadNetTable();
-		} else if(e.getSource()==this.menuItem_DeleteNet){
+		}
+		else if(e.getSource()==this.menuItem_DeleteNet){
 			if(this.currentNet==null) {
 				JOptionPane.showMessageDialog(null, "请选择网点", "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -280,18 +299,101 @@ public class FrmMain extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-		} else if(e.getSource()==this.menuItem_types){
+		}
+		else if(e.getSource()==this.menuItem_types){
 			FrmCatTypeCars dlg=new FrmCatTypeCars();
 			dlg.setVisible(true);
 			this.reloadNetTable();
 
-		} else if(e.getSource()==this.menuItem_Discount){
+		}
+		else if(e.getSource()==this.menuItem_Discount){
 			FrmDiscount frmDiscount=new FrmDiscount();
 			frmDiscount.setVisible(true);
 
-		} else if(e.getSource()==this.menuItem_Coupon){
+		}
+		else if(e.getSource()==this.menuItem_Coupon){
 			FrmCoupon frmCoupon=new FrmCoupon();
 			frmCoupon.setVisible(true);
+		}
+		else if(e.getSource()==this.btnSelectCoupon){
+			DlgSelectCoupon dlg=new DlgSelectCoupon();
+			dlg.setVisible(true);
+		}
+		else if(e.getSource()==this.btnSelectReturnNet){
+			DlgSelectReturnNet dlg=new DlgSelectReturnNet();
+			dlg.setVisible(true);
+		}
+		else if(e.getSource()==this.btnOrderAdd){
+			currentReturnNet = CCCarUtil.CurrentReturnNet;
+			if(this.currentNet==null) {
+				JOptionPane.showMessageDialog(null, "请选择网点", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			} else if(this.currentCategory==null){
+				JOptionPane.showMessageDialog(null, "请选择车类", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			} else if(this.currentType==null){
+				JOptionPane.showMessageDialog(null, "请选择车型", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			} else if(this.currentCar==null){
+				JOptionPane.showMessageDialog(null, "请选择具体车辆", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+
+			} else if(this.currentReturnNet==null){
+				JOptionPane.showMessageDialog(null, "请选择还车网点", "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			try {
+				TblOrder order = new TblOrder();
+				order.setNetBorrowId(currentNet.getNetId());
+				order.setOrderStatus(0);
+				order.setInitialAmount(currentType.getPrice());
+				order.setCarId(currentCar.getCarId());
+				if (currentCar.getCarStatus()==0) throw new BaseException("该车正在租用中");
+				order.setNetReturnId(currentReturnNet.getNetId());
+				if(currentCoupon!=null) order.setCouponId(currentCoupon.getCouponId());
+				else order.setCouponId(null);
+				CCCarUtil.orderManager.addOrder(order);
+				this.reloadOrderTable();
+				this.reloadCarTable(currentType.getTypeId());
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			reloadOrderTable();
+		}
+		else if(e.getSource()==this.btnOrderComplete){
+			try {
+				if(currentOrder==null){
+					throw  new BusinessException("请选择订单");
+				}
+				else if(currentOrder.getOrderStatus()==1){
+					throw new BusinessException("该订单已经完成");
+				}
+				CCCarUtil.orderManager.completeOrder(currentOrder.getOrderId());
+				if(currentCar!=null) this.reloadCarTable(currentCar.getCarId());
+				this.reloadOrderTable();
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		}
+		else if(e.getSource()==this.btnOrderDelete){
+			try {
+				if(currentOrder==null){
+					throw  new BusinessException("请选择订单");
+				}
+				else if(currentOrder.getOrderStatus()==0){
+					throw new BusinessException("该订单未完成,不能删除");
+				}
+				CCCarUtil.orderManager.deleteOrder(currentOrder.getOrderId());
+
+				this.reloadOrderTable();
+			} catch (BaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 		}
 		//TODO 上列表的动作
 	}

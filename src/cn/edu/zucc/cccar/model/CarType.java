@@ -14,11 +14,12 @@ public class CarType implements Serializable {
         if(col==0) return typeId.toString();
         else if(col==1) return typeName;
         else if(col==2) return categoryId==null? null:categoryId.toString();
-        else if(col==3) return displacement==null? null:displacement.toString();
-        else if(col==4) return gear==null? null:gear.toString();
-        else if(col==5) return seatNum==null? null:seatNum.toString();
-        else if(col==6) return price==null? null:price.toString();
-        else if(col==7) return pic==null? null:pic;//TODO Õº∆¨‘ı√¥∏„
+        else if(col==3) return brand==null? null:brand.toString();
+        else if(col==4) return displacement==null? null:displacement.toString();
+        else if(col==5) return gear==null? null:gear.toString();
+        else if(col==6) return seatNum==null? null:seatNum.toString();
+        else if(col==7) return price==null? null:price.toString();
+        else if(col==8) return pic==null? null:pic;//TODO Õº∆¨‘ı√¥∏„
         else return "";
     }
     private Integer typeId;
