@@ -41,20 +41,20 @@ public class FrmMain extends JFrame implements ActionListener {
 //	private JMenuItem  menuItem_DeleteCar=new JMenuItem("删除车");
 
 	private JMenu menu_discount=new JMenu("优惠管理");
-	private JMenu menu_scrap=new JMenu("报废管理");
-	private JMenu menu_order=new JMenu("订单管理");
-	private JMenu menu_user=new JMenu("用户管理");
+//	private JMenu menu_scrap=new JMenu("报废管理"); 取消报废和订单管理, 因为已在其他环境实现,2021年9月13日13:53:32
+//	private JMenu menu_order=new JMenu("订单管理");	可用名字搜索查看相关问题
+	private JMenu menu_user=new JMenu("个人信息管理");
 
 	private JMenuItem  menuItem_AddNet=new JMenuItem("新增网点");
 	private JMenuItem  menuItem_DeleteNet=new JMenuItem("删除网点");
 	private JMenuItem  menuItem_Discount=new JMenuItem("促销管理");
 	private JMenuItem  menuItem_Coupon=new JMenuItem("优惠券管理");
-	private JMenuItem  menuItem_AddScrap=new JMenuItem("新增报废");
-	private JMenuItem  menuItem_DeleteScrap=new JMenuItem("删除报废");
-	private JMenuItem  menuItem_AddOrder=new JMenuItem("新增订单");
-	private JMenuItem  menuItem_DeleteOrder=new JMenuItem("删除订单");
-	private JMenuItem  menuItem_AddUser=new JMenuItem("新增用户");
-	private JMenuItem  menuItem_DeleteUser=new JMenuItem("删除用户");
+//	private JMenuItem  menuItem_AddScrap=new JMenuItem("新增报废");
+//	private JMenuItem  menuItem_DeleteScrap=new JMenuItem("删除报废");
+//	private JMenuItem  menuItem_AddOrder=new JMenuItem("新增订单");
+//	private JMenuItem  menuItem_DeleteOrder=new JMenuItem("删除订单");
+	private JMenuItem  menuItem_User=new JMenuItem("查看并修改个人信息");
+//	private JMenuItem  menuItem_DeleteUser=new JMenuItem("删除用户");
 	//table
 	DefaultTableModel tblNetModel=new DefaultTableModel();
 	DefaultTableModel tblTypesModel=new DefaultTableModel();
@@ -137,17 +137,21 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.menu_net.add(this.menuItem_AddNet); this.menuItem_AddNet.addActionListener(this);
 		this.menu_net.add(this.menuItem_DeleteNet); this.menuItem_DeleteNet.addActionListener(this);
 
-		this.menu_discount.add(this.menuItem_Discount); this.menuItem_Discount.addActionListener(this);
+		if(CCCarUtil.currentLoginEmployee!=null&&CCCarUtil.currentLoginEmployee.getNetId()==null){
+			this.menu_discount.add(this.menuItem_Discount); this.menuItem_Discount.addActionListener(this);
+		}
 		this.menu_discount.add(this.menuItem_Coupon); this.menuItem_Coupon.addActionListener(this);
 
-		this.menu_scrap.add(this.menuItem_AddScrap); this.menuItem_AddScrap.addActionListener(this);
-		this.menu_scrap.add(this.menuItem_DeleteScrap); this.menuItem_DeleteScrap.addActionListener(this);
+//		this.menu_scrap.add(this.menuItem_AddScrap); this.menuItem_AddScrap.addActionListener(this);
+//		this.menu_scrap.add(this.menuItem_DeleteScrap); this.menuItem_DeleteScrap.addActionListener(this);
+//
+//		this.menu_order.add(this.menuItem_AddOrder); this.menuItem_AddOrder.addActionListener(this);
+//		this.menu_order.add(this.menuItem_DeleteOrder); this.menuItem_DeleteOrder.addActionListener(this);
 
-		this.menu_order.add(this.menuItem_AddOrder); this.menuItem_AddOrder.addActionListener(this);
-		this.menu_order.add(this.menuItem_DeleteOrder); this.menuItem_DeleteOrder.addActionListener(this);
-
-		this.menu_user.add(this.menuItem_AddUser); this.menuItem_AddUser.addActionListener(this);
-		this.menu_user.add(this.menuItem_DeleteUser); this.menuItem_DeleteUser.addActionListener(this);
+		this.menu_user.add(this.menuItem_User); this.menuItem_User.addActionListener(this);
+//		this.menu_user.add(this.menuItem_DeleteUser); this.menuItem_DeleteUser.addActionListener(this);
+// 取消
+		menu_user.addActionListener(this);
 
 		this.menu_types.add(this.menuItem_types);this.menuItem_types.addActionListener(this);
 		this.btnSelectCoupon.addActionListener(this);
@@ -155,13 +159,19 @@ public class FrmMain extends JFrame implements ActionListener {
 		this.btnOrderAdd.addActionListener(this);
 		this.btnOrderDelete.addActionListener(this);
 		this.btnOrderComplete.addActionListener(this);
+
 		}
 		{
-		menuBar.add(menu_net);
-		menuBar.add(menu_types);
-		menuBar.add(menu_discount);
-		menuBar.add(menu_scrap);
-		menuBar.add(menu_order);
+		    if(CCCarUtil.currentLoginEmployee!=null){
+				System.out.println(CCCarUtil.currentLoginEmployee.getEmployeeId()+"当前登录员工");
+				if(CCCarUtil.currentLoginEmployee.getNetId()==null){
+					menuBar.add(menu_net);
+				}
+				menuBar.add(menu_types);
+                menuBar.add(menu_discount);
+            }
+//		menuBar.add(menu_scrap);
+//		menuBar.add(menu_order);
 		menuBar.add(menu_user);
 		}
 		this.dataTblOrder.addMouseListener(new MouseAdapter() {
@@ -179,6 +189,7 @@ public class FrmMain extends JFrame implements ActionListener {
 				int i = FrmMain.this.dataTableNet.getSelectedRow();
 				if(i<0) return;
 				currentNet=allNets.get(i);
+				CCCarUtil.currentNet = currentNet;
 				FrmMain.this.reloadCategoryTable(i);
 			}
 		});
@@ -252,7 +263,9 @@ public class FrmMain extends JFrame implements ActionListener {
 		southOfsouth.add(btnSelectCoupon);
 		southOfsouth.add(btnOrderAdd);
 		southOfsouth.add(btnOrderComplete);
-		southOfsouth.add(btnOrderDelete);
+        if(CCCarUtil.currentLoginEmployee!=null&&CCCarUtil.currentLoginEmployee.getNetId()==null){
+            southOfsouth.add(btnOrderDelete);
+        }
 		northOfsouth.add(new JScrollPane(this.dataTblOrder));
 		south.add(southOfsouth,BorderLayout.NORTH);
 		south.add(northOfsouth,BorderLayout.SOUTH);
@@ -324,37 +337,44 @@ public class FrmMain extends JFrame implements ActionListener {
 			dlg.setVisible(true);
 		}
 		else if(e.getSource()==this.btnOrderAdd){
-			currentReturnNet = CCCarUtil.CurrentReturnNet;
-			if(this.currentNet==null) {
-				JOptionPane.showMessageDialog(null, "请选择网点", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			} else if(this.currentCategory==null){
-				JOptionPane.showMessageDialog(null, "请选择车类", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			} else if(this.currentType==null){
-				JOptionPane.showMessageDialog(null, "请选择车型", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			} else if(this.currentCar==null){
-				JOptionPane.showMessageDialog(null, "请选择具体车辆", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
 
-			} else if(this.currentReturnNet==null){
-				JOptionPane.showMessageDialog(null, "请选择还车网点", "错误",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 			try {
+				currentReturnNet = CCCarUtil.currentReturnNet;
+				if(this.currentNet==null) {
+					JOptionPane.showMessageDialog(null, "请选择网点", "错误",JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if(this.currentCategory==null){
+					JOptionPane.showMessageDialog(null, "请选择车类", "错误",JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if(this.currentType==null){
+					JOptionPane.showMessageDialog(null, "请选择车型", "错误",JOptionPane.ERROR_MESSAGE);
+					return;
+				} else if(this.currentCar==null){
+					JOptionPane.showMessageDialog(null, "请选择具体车辆", "错误",JOptionPane.ERROR_MESSAGE);
+					return;
+				}else if (currentCar.getCarStatus()==0) throw new BaseException("该车正在租用中");
+				else if(currentCar.getCarStatus()==-1) throw new BusinessException("车辆已经报废,不能添加订单");
+				else if(this.currentReturnNet==null){
+					JOptionPane.showMessageDialog(null, "请选择还车网点", "错误",JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				TblOrder order = new TblOrder();
 				order.setNetBorrowId(currentNet.getNetId());
 				order.setOrderStatus(0);
 				order.setInitialAmount(currentType.getPrice());
 				order.setCarId(currentCar.getCarId());
-				if (currentCar.getCarStatus()==0) throw new BaseException("该车正在租用中");
+				if(CCCarUtil.currentLoginUser!=null) order.setUserId(CCCarUtil.currentLoginUser.getUserId());
+				else order.setUserId(null);//为空表示管理员生成的测试数据
+
 				order.setNetReturnId(currentReturnNet.getNetId());
 				if(currentCoupon!=null) order.setCouponId(currentCoupon.getCouponId());
 				else order.setCouponId(null);
 				CCCarUtil.orderManager.addOrder(order);
+//				if(CCCarUtil.currentLoginUser!=null)
 				this.reloadOrderTable();
 				this.reloadCarTable(currentType.getTypeId());
+				currentNet=null;
+				currentReturnNet = null;
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -373,6 +393,11 @@ public class FrmMain extends JFrame implements ActionListener {
 				CCCarUtil.orderManager.completeOrder(currentOrder.getOrderId());
 				if(currentCar!=null) this.reloadCarTable(currentCar.getCarId());
 				this.reloadOrderTable();
+				this.reloadCarTable(currentCar.getTypeId());
+				currentReturnNet = null;
+				currentCoupon = null;
+				CCCarUtil.lbChangeReturnNet.setText("未选择");
+
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -395,12 +420,32 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 
 		}
-		//TODO 上列表的动作
-	}
+		else if(e.getSource()==this.menuItem_User){
+            if(CCCarUtil.currentLoginEmployee!=null&&CCCarUtil.currentLoginEmployee.getNetId()==null){
 
+                FrmUserManager frmUserManager=new FrmUserManager();
+                frmUserManager.setVisible(true);
+            }
+            else {
+                if (CCCarUtil.currentLoginUser==null) {
+                    JOptionPane.showMessageDialog(null, "用户信息出错请联系管理员", "错误",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    DlgUpdateUser dlg = new DlgUpdateUser(this,"用户信息更新",true,CCCarUtil.currentLoginUser);
+                    dlg.setVisible(true);
+//                CCCarUtil.userManager.update(userInfo);
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+		}
+	}
 	private void reloadOrderTable() {
 		try {
-			orders=CCCarUtil.orderManager.loadAll();
+			if(CCCarUtil.currentLoginUser!=null) orders=CCCarUtil.orderManager.loadByUser(CCCarUtil.currentLoginUser.getUserId());
+			else orders=CCCarUtil.orderManager.loadAll();
 		} catch (BaseException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 			return;

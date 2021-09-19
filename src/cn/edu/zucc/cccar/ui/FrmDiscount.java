@@ -81,7 +81,7 @@ public class FrmDiscount extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==this.menuItem_add){
-            DlgAddNet dlg=new DlgAddNet(this,"添加网点",true);
+            DlgAddDiscount dlg=new DlgAddDiscount(this,"添加促销活动",true);
             dlg.setVisible(true);
             this.reloadDiscountTable();
         } else if(e.getSource()==this.menuItem_delete){

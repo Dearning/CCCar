@@ -27,11 +27,12 @@ public class CCCarUtil {
 
 
 	public static UserInfo currentLoginUser;
+	public static UserInfo currentManagerUser;
 	public static Employee currentLoginEmployee;
 	public static String currentUserName;
-	public static Coupon CurrentCoupon = null;
-	public static Coupon CurrentNet = null;
-	public static NetInfo CurrentReturnNet = null;
+	public static Coupon currentCoupon = null;
+	public static NetInfo currentNet = null;
+	public static NetInfo currentReturnNet = null;
 	public static JLabel lbChangeReturnNet = new JLabel("Î´Ñ¡Ôñ");
 	public static JLabel lbChangeCoupon = new JLabel("Î´Ñ¡Ôñ");
 }

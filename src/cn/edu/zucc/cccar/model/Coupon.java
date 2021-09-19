@@ -11,7 +11,8 @@ import java.util.Date;
 public class Coupon implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String[] tableTitles={"优惠券编号","是否被使用","用户编号","优惠券数额","开始时间","结束时间"};
+    public static final String[] tableTitles={"优惠券编号","是否被使用","用户编号",
+            "优惠券数额","开始时间","结束时间","优惠券描述","网点编号"};
 
     public String getCell(int col){
         if(col==0) return couponId.toString();
@@ -23,6 +24,8 @@ public class Coupon implements Serializable {
         else if(col==3) return creditamount.toString();
         else if(col==4) return startdate.toString();
         else if(col==5) return enddate.toString();
+        else if(col==6) return content;
+        else if(col==7) return net_id==null?null:net_id.toString();
         else return "";
     }
     private Integer couponId;
@@ -31,6 +34,17 @@ public class Coupon implements Serializable {
     private Integer creditamount;
     private Date startdate;
     private Date enddate;
+    private Integer net_id;
+    private String content;
+
+
+    public Integer getNet_id() {
+        return net_id;
+    }
+
+    public void setNet_id(Integer net_id) {
+        this.net_id = net_id;
+    }
 
     public Boolean getUsed() {
         return isUsed;
@@ -48,7 +62,6 @@ public class Coupon implements Serializable {
         this.userId = userId;
     }
 
-    private String content;
 
     public Coupon() {
     }

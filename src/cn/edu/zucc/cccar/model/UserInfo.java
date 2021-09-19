@@ -6,44 +6,25 @@ public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-    * user_id
-    */
+    public static final String[] tableTitles={"用户编号","用户名","性别","密码","电话","邮箱","城市","注册时间"};
+    public String getCell(int col){
+        if(col==0) return userId.toString();
+        else if(col==1) return name;
+        else if(col==2) return sex;
+        else if(col==3) return password;
+        else if(col==4) return phone;
+        else if(col==5) return email;
+        else if(col==6) return city;
+        else if(col==7) return registrationtime.toString();
+        else return "";
+    }
     private Integer userId;
-
-    /**
-    * name
-    */
     private String name;
-
-    /**
-    * sex
-    */
     private String sex;
-
-    /**
-    * password
-    */
     private String password;
-
-    /**
-    * phone
-    */
     private String phone;
-
-    /**
-    * email
-    */
     private String email;
-
-    /**
-    * city
-    */
     private String city;
-
-    /**
-    * registrationtime
-    */
     private Date registrationtime;
 
 

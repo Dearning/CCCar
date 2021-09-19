@@ -10,7 +10,6 @@ import java.io.Serializable;
 public class CarInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final String[] tableTitles={"编号","网点编号","车型","牌照号","车俩状态"};
 
     private Integer carId;
     private Integer netId;
@@ -18,6 +17,7 @@ public class CarInfo implements Serializable {
     private String license;
     private Integer carStatus; //0 不在网点,工作中, 1 在网点空闲 -1 报废了
 
+    public static final String[] tableTitles={"编号","网点编号","车型","牌照号","车俩状态"};
     public String getCell(int col){
         if(col==0) return carId.toString();
         else if(col==1) return netId.toString();

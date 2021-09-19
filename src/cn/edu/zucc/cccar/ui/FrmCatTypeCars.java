@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class FrmCatTypeCars  extends JFrame implements ActionListener {
@@ -33,7 +34,8 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
     private JMenuItem  menuItem_AddCar=new JMenuItem("新增车");
     private JMenuItem  menuItem_DeleteCar=new JMenuItem("删除车");
 
-    private JMenuItem  menuItem_AddScrap=new JMenuItem("报废");
+    private JMenuItem  menuItem_AddScrap=new JMenuItem("报废车辆");
+    private JMenuItem menuItem_AddScrapDescription = new JMenuItem("添加报废描述");
 
     DefaultTableModel tblCategory = new DefaultTableModel();
     DefaultTableModel tblTypeModel=new DefaultTableModel();
@@ -122,10 +124,13 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
         this.menu_car.add(this.menuItem_AddCar); this.menuItem_AddCar.addActionListener(this);
         this.menu_car.add(this.menuItem_DeleteCar); this.menuItem_DeleteCar.addActionListener(this);
         this.menu_scrap.add(this.menuItem_AddScrap);this.menuItem_AddScrap.addActionListener(this);
-
-        menuBar.add(menu_categories);
-        menuBar.add(menu_type);
-        menuBar.add(menu_car);
+        this.menu_scrap.add(this.menuItem_AddScrapDescription);
+        this.menuItem_AddScrapDescription.addActionListener(this);
+        if(CCCarUtil.currentLoginEmployee!=null&&CCCarUtil.currentLoginEmployee.getNetId()==null){
+                menuBar.add(menu_categories);
+                menuBar.add(menu_type);
+                menuBar.add(menu_car);
+        }
         menuBar.add(menu_scrap);
 
         this.setJMenuBar(menuBar);
@@ -145,6 +150,12 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
         up.add(east);
         up.add(eastOfeast);
         this.getContentPane().add(up, BorderLayout.CENTER);
+
+        statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel label=new JLabel("您好! "+CCCarUtil.currentLoginEmployee.getEmployeeId()+"号员工"+", 当前网点: "+CCCarUtil.currentLoginEmployee.getNetId());//修改成   您好！+登陆用户名
+        statusBar.add(label);
+        this.getContentPane().add(statusBar,BorderLayout.SOUTH);
+        this.setVisible(true);
         reloadScrapTable();
     }
     @Override
@@ -152,6 +163,8 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
         if(e.getSource()==this.menuItem_AddCategory){
             DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
             dlg.setVisible(true);
+            // 需要添加车类 后 自动更新已有车类列表,
+            this.reloadCategoryTable();
         }
         else if(e.getSource()==this.menuItem_DeleteCategory){
             if(this.currentCategory==null) {
@@ -169,6 +182,7 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
         else if(e.getSource()==this.menuItem_AddType){
             DlgAddCarType dlg=new DlgAddCarType(this,"添加车型",true);
             dlg.setVisible(true);
+            this.reloadTypeTable(currentCategory.getCategoryId());
         }
         else if(e.getSource()==this.menuItem_DeleteType){
             if(this.currentType==null) {
@@ -186,6 +200,7 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
         else if(e.getSource()==this.menuItem_AddCar){
             DlgAddCar dlg=new DlgAddCar(this,"添加车",true);
             dlg.setVisible(true);
+            this.reloadCarTable(currentType.getTypeId());
         }
         else if(e.getSource()==this.menuItem_DeleteCar){
             if(this.currentCar==null) {
@@ -193,6 +208,7 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
                 return;
             }
             try {
+                if(currentCar.getCarStatus()==0) throw new BusinessException("当前车辆租借中不能删除   ");
                 CCCarUtil.carManager.deleteCar(this.currentCar);
                 this.reloadCarTable(currentType.getTypeId());
             } catch (BaseException e1) {
@@ -200,15 +216,6 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
                 return;
             }
         }
-        else if(e.getSource()==this.menuItem_AddCategory){
-            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
-            dlg.setVisible(true);
-        }
-        else if(e.getSource()==this.menuItem_AddCategory){
-            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
-            dlg.setVisible(true);
-        }
-
         else if(e.getSource()==this.menuItem_AddScrap){
             //TODO
             try {
@@ -217,13 +224,34 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
                 else if (currentCar.getCarStatus()==-1) throw new BusinessException("车辆已经报废");
                 Scrap scrap = new Scrap();
                 scrap.setCarId(currentCar.getCarId());
+                scrap.setScraptime(new Timestamp(System.currentTimeMillis()));
                 CCCarUtil.scrapManager.add(scrap);
+                this.reloadScrapTable();
+                this.reloadCarTable(currentType.getTypeId());
+            } catch (BaseException e1) {
+                JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } if(e.getSource()==this.menuItem_AddScrapDescription){
+            try {
+                if(currentScraps==null) throw new BusinessException("没有选择报废车辆");
+                DlgAddScrapDescription dlg=new DlgAddScrapDescription(this,"添加报废描述",true,currentScraps.getCarId());
+                dlg.setVisible(true);
                 this.reloadScrapTable();
             } catch (BaseException e1) {
                 JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
+
+//        else if(e.getSource()==this.menuItem_AddCategory){
+//            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
+//            dlg.setVisible(true);
+//        }
+//        else if(e.getSource()==this.menuItem_AddCategory){
+//            DlgAddCategory dlg=new DlgAddCategory(this,"添加车类",true);
+//            dlg.setVisible(true);
+//        }
     }
     private void reloadScrapTable(){
         try {
@@ -234,7 +262,7 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
         }
         tblScrapData =new Object[scraps.size()][Scrap.tableTitles.length];
         for(int i=0;i<scraps.size();i++){
-            for(int j=0;j<CarCategory.tableTitles.length;j++)
+            for(int j=0;j<Scrap.tableTitles.length;j++)
                 tblScrapData[i][j]=scraps.get(i).getCell(j);
         }
         tblScrapModel.setDataVector(tblScrapData,tblScrapTitle);
@@ -244,7 +272,10 @@ public class FrmCatTypeCars  extends JFrame implements ActionListener {
     private void reloadCategoryTable(){
         //TODO
         try {
-            carCategories= CCCarUtil.categoryManager.loadAll();
+            if(CCCarUtil.currentLoginEmployee.getNetId()!=null){
+                carCategories= CCCarUtil.categoryManager.loadTypes(CCCarUtil.currentLoginEmployee.getNetId());
+            }
+            else carCategories= CCCarUtil.categoryManager.loadAll();
         } catch (BaseException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
             return;

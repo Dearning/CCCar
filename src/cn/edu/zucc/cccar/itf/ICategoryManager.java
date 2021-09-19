@@ -19,7 +19,8 @@ public interface ICategoryManager {
 
     void deleteCategory(CarCategory currentCategory)  throws BaseException;
 
-    List<CarCategory> loadAll()throws BaseException;
+    List<CarCategory> loadAll()throws BaseException ;
+
 
     ;
 }

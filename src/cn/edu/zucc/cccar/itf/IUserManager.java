@@ -3,6 +3,8 @@ package cn.edu.zucc.cccar.itf;
 import cn.edu.zucc.cccar.model.UserInfo;
 import cn.edu.zucc.cccar.util.BaseException;
 
+import java.util.List;
+
 public interface IUserManager {
     /**
      * 注册：
@@ -35,4 +37,8 @@ public interface IUserManager {
      * @param newPwd2 重复输入的新密码
      */
     public void changePwd(UserInfo user, String oldPwd,String newPwd, String newPwd2)throws BaseException;
+
+    List<UserInfo> loadAll() throws BaseException;
+
+    void update(UserInfo carInfo)throws BaseException;
 }

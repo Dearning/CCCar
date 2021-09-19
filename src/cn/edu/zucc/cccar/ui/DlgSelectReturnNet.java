@@ -1,8 +1,6 @@
 package cn.edu.zucc.cccar.ui;
 
 import cn.edu.zucc.cccar.CCCarUtil;
-import cn.edu.zucc.cccar.model.CarInfo;
-import cn.edu.zucc.cccar.model.Coupon;
 import cn.edu.zucc.cccar.model.NetInfo;
 import cn.edu.zucc.cccar.util.BaseException;
 
@@ -71,7 +69,7 @@ public class DlgSelectReturnNet extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==this.btnSelete){
-            CCCarUtil.CurrentReturnNet = currentNet;
+            CCCarUtil.currentReturnNet = currentNet;
             CCCarUtil.lbChangeReturnNet.setText(""+currentNet.getNetName()+"");
             this.setVisible(false);
         } else if(e.getSource()==this.btnQuit){

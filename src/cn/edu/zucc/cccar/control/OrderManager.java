@@ -7,26 +7,68 @@ import cn.edu.zucc.cccar.util.BaseException;
 import cn.edu.zucc.cccar.util.BusinessException;
 import cn.edu.zucc.cccar.util.DBUtil;
 import cn.edu.zucc.cccar.util.DbException;
-import jdk.nashorn.internal.codegen.types.Type;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class OrderManager implements IOrderManager {
+    @Override
+    public List<TblOrder> loadByUser(Integer userId) throws BaseException {
+        List<TblOrder> result = new ArrayList<TblOrder>();
+        Connection connection =null;
+        try {
+            connection= DBUtil.getConnection();
+            String sqlString ="select * from tbl_order where user_id = ? order by order_status ASC, borrowDate DESC\n";
+            java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
+            pStatement.setInt(1,userId);
+            java.sql.ResultSet resultSet = pStatement.executeQuery();
+            while(resultSet.next()){
+                TblOrder tblOrder = new TblOrder();
+//                System.out.println(carType);
+                tblOrder.setOrderId(resultSet.getInt(1));
+                tblOrder.setCouponId(resultSet.getInt(2));
+                tblOrder.setNetBorrowId(resultSet.getInt(3));
+                tblOrder.setCarId(resultSet.getInt(4));
+                tblOrder.setNetReturnId(resultSet.getInt(5));
+                tblOrder.setUserId(resultSet.getInt(6));
+                tblOrder.setBorrowdate(resultSet.getDate(7));
+                tblOrder.setReturndate(resultSet.getTimestamp(8));
+                tblOrder.setBorrowduration(resultSet.getString(9));
+                tblOrder.setInitialAmount(resultSet.getBigDecimal(10));
+                tblOrder.setOriginalAmount(resultSet.getBigDecimal(11));
+                tblOrder.setTotalamount(resultSet.getBigDecimal(12));
+                tblOrder.setOrderStatus(resultSet.getInt(13));
+                result.add(tblOrder);
+            }
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DbException(e);
+        }finally {
+            if(connection!=null) {
+                try {
+                    connection.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+    }
+
     @Override
     public void completeOrder(Integer orderId) throws BaseException {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
             String sqlString;
+            //取得订单信息
             sqlString ="select borrowDate,initial_amount,car_Id,net_borrow_id,net_return_id,coupon_id from tbl_order where order_id = ?\n";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
             pStatement.setInt(1,orderId);
@@ -57,7 +99,7 @@ public class OrderManager implements IOrderManager {
             }
             resultSet.close();
             pStatement.close();
-            // 选择打折力度，转换成小数
+            // 选择打折力度，转换成小数,只要是下单时间是促销时间,就可以享受优惠.
             sqlString="select discountAmount from discount_info where net_id = ? " +
                     "and type_Id = ? and startDate < ? and endDate > ?";
             pStatement = connection.prepareStatement(sqlString);
@@ -88,6 +130,8 @@ public class OrderManager implements IOrderManager {
             resultSet = pStatement.executeQuery();
             if(resultSet.next()){
                 couponAmount = resultSet.getBigDecimal(1);
+            } else {
+                couponAmount = BigDecimal.ZERO;
             }
             //更新订单的订单状态，和还车日期，借车时长，计算总金额
             sqlString ="update tbl_order set order_status = 1, returnDate=?,borrowDuration=?,original_amount=?,totalAmount=? " +
@@ -100,8 +144,6 @@ public class OrderManager implements IOrderManager {
             pStatement.setString(2,borrowDuration);
             //封装了下s
             int hours = getTimeDifferenceHours(returnDate,borrowDate);
-
-
 
             BigDecimal totalMoney = moneyPerHour.multiply(new BigDecimal(hours)).multiply
                     (new BigDecimal(discountAmount)).subtract(couponAmount);
@@ -236,7 +278,7 @@ public class OrderManager implements IOrderManager {
             pStatement.setInt(2,order.getNetBorrowId());
 
             pStatement.setInt(3,order.getCarId());
-            pStatement.setInt(4, CCCarUtil.CurrentReturnNet.getNetId());
+            pStatement.setInt(4, CCCarUtil.currentReturnNet.getNetId());
             if(order.getUserId()!=null) pStatement.setInt(5,order.getUserId());
             else pStatement.setNull(5, Types.INTEGER);
             pStatement.setTimestamp(6,new Timestamp(System.currentTimeMillis()));
@@ -270,7 +312,7 @@ public class OrderManager implements IOrderManager {
         Connection connection =null;
         try {
             connection= DBUtil.getConnection();
-            String sqlString ="select * from tbl_order order by order_status ASC";
+            String sqlString ="select * from tbl_order order by order_status ASC, borrowDate DESC";
             java.sql.PreparedStatement pStatement = connection.prepareStatement(sqlString);
             java.sql.ResultSet resultSet = pStatement.executeQuery();
             while(resultSet.next()){

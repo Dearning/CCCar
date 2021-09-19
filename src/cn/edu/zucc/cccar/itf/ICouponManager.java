@@ -13,5 +13,7 @@ public interface ICouponManager {
 
     List<Coupon> loadAll() throws BaseException;
 
-    List<Coupon> loadUser(UserInfo currentLoginUser)throws BaseException;
+    List<Coupon> loadUser(UserInfo currentLoginUser) throws BaseException;
+
+    void add(Coupon coupon) throws BaseException;
 }

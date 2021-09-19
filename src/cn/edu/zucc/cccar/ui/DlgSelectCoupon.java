@@ -1,9 +1,7 @@
 package cn.edu.zucc.cccar.ui;
 
 import cn.edu.zucc.cccar.CCCarUtil;
-import cn.edu.zucc.cccar.model.CarInfo;
 import cn.edu.zucc.cccar.model.Coupon;
-import cn.edu.zucc.cccar.model.NetInfo;
 import cn.edu.zucc.cccar.util.BaseException;
 import cn.edu.zucc.cccar.util.BusinessException;
 
@@ -38,7 +36,7 @@ public class DlgSelectCoupon  extends JDialog implements ActionListener {
 
 
     public DlgSelectCoupon() {
-
+        this.setTitle("当前订单可用优惠券");
         this.setSize(500, 200);
 //        this.setExtendedState(Frame.MAXIMIZED_BOTH);
         this.btnSelete.addActionListener(this);
@@ -81,7 +79,7 @@ public class DlgSelectCoupon  extends JDialog implements ActionListener {
         if(e.getSource()==this.btnSelete){
             try {
 
-                CCCarUtil.CurrentCoupon = currentCoupon;
+                CCCarUtil.currentCoupon = currentCoupon;
                 if(currentCoupon.getUsed()==true) throw new BusinessException("优惠券已经被使用,请重新选择");
                 CCCarUtil.lbChangeCoupon.setText(""+currentCoupon.getCreditamount()+"元");
                 this.setVisible(false);
@@ -93,7 +91,7 @@ public class DlgSelectCoupon  extends JDialog implements ActionListener {
         } else if(e.getSource()==this.btnQuit){
             this.setVisible(false);
         } else if(e.getSource() == this.btnWithdraw){
-            CCCarUtil.CurrentCoupon = null;
+            CCCarUtil.currentCoupon = null;
 
             CCCarUtil.lbChangeCoupon.setText("未选择");
             this.setVisible(false);
@@ -103,6 +101,7 @@ public class DlgSelectCoupon  extends JDialog implements ActionListener {
     private void reloadCouponTable(){
         try {
             if(CCCarUtil.currentLoginUser==null){
+                //修改为显示当前网点当前用户可用的优惠券
                 coupons=CCCarUtil.couponManager.loadAll();
             } else {
                 coupons=CCCarUtil.couponManager.loadUser(CCCarUtil.currentLoginUser);

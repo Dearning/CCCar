@@ -13,4 +13,6 @@ public interface IOrderManager {
     void deleteOrder(Integer orderId) throws BaseException;
 
     void completeOrder(Integer orderId)throws BaseException;
+
+    List<TblOrder> loadByUser(Integer userId) throws BaseException;
 }

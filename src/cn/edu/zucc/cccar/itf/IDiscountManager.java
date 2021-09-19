@@ -12,4 +12,5 @@ public interface IDiscountManager {
 
     void update(DiscountInfo currentDiscount) throws BaseException;
 
+    void add(DiscountInfo discountInfo) throws BaseException;
 }

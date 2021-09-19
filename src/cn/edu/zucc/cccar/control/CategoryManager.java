@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryManager implements ICategoryManager {
+
+
+
     @Override
     public List<CarCategory> loadAll() throws BaseException {
         List<CarCategory> result = new ArrayList<CarCategory>();

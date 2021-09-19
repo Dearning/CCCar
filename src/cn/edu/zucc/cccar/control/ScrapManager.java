@@ -25,7 +25,8 @@ public class ScrapManager implements IScrapManager {
             java.sql.PreparedStatement pStatement = null;
             sqlString ="update scrap set description = ? where car_id = ?";
             pStatement=connection.prepareStatement(sqlString);
-            pStatement.setInt(1,carId);
+            pStatement.setString(1,netIdText);
+            pStatement.setInt(2,carId);
             pStatement.execute();
             pStatement.close();
         } catch (Exception e) {

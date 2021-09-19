@@ -34,6 +34,7 @@ public class DlgLogin extends JDialog implements ActionListener {
 	private JRadioButton jrEmployee = new JRadioButton("员工");
 	private JRadioButton jrSuperEmployee = new JRadioButton("管理员", true); //初始化选择这个
 	private ButtonGroup btnGroup = new ButtonGroup();//绑定n个单选为n选一
+	String loginAccountType="管理员";
 
 	public DlgLogin(Frame f, String s, boolean b) {
 		super(f, s, b);
@@ -91,23 +92,25 @@ public class DlgLogin extends JDialog implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String loginAccountType="管理员";
 		if (e.getSource() == this.jrUser) {
+
+			loginAccountType = new String("用户");
 			System.out.println("登陆类型为 用户");
-			loginAccountType = "用户";
 //			Bus.LoginAccountType = "用户";
 		} else if (e.getSource() == this.jrEmployee) {
-			loginAccountType = "普通员工";
+			loginAccountType = new String("普通员工");
 			System.out.println("登陆类型为 普通员工");
 //			Bus.LoginAccountType = "普通员工";
 		} else if (e.getSource() == this.jrSuperEmployee) {
-			loginAccountType = "管理员";
+			loginAccountType = new String("管理员");
 			System.out.println("登陆类型为 管理员");
 //			Bus.LoginAccountType = "管理员";
 		}else if (e.getSource() == this.btnLogin) {
 			String account=this.edtAccount.getText();
 			String pwd=new String(this.edtPwd.getPassword());
 			CCCarUtil.currentUserName = account;
+			CCCarUtil.currentLoginEmployee = null;
+			CCCarUtil.currentLoginUser = null;
 			try {
 				switch(loginAccountType){
 					case "用户":

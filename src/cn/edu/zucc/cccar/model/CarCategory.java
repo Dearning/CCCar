@@ -6,7 +6,7 @@ public class CarCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String[] tableTitles={"车类编号","车类名称","描述"};
+    public static final String[] tableTitles={"车类编号","车类名称","描述",};
     private Integer categoryId;
     private String categoryName;
     private String categoryDescription;

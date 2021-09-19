@@ -65,10 +65,11 @@ public class FrmCoupon extends JFrame implements ActionListener {
         });
 
         statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-        JLabel label=new JLabel("您好! "+CCCarUtil.currentUserName);//修改成   您好！+登陆用户名
+        JLabel label=new JLabel("您好! "+CCCarUtil.currentLoginEmployee.getEmployeeId()+
+                "号员工"+", 当前网点: "+CCCarUtil.currentLoginEmployee.getNetId());//修改成   您好！+登陆用户名
         statusBar.add(label);
         this.getContentPane().add(statusBar,BorderLayout.SOUTH);
-
+        this.setVisible(true);
 //        this.addWindowListener(new WindowAdapter(){
 //            public void windowClosing(WindowEvent e){
 //                System.exit(0);
@@ -80,7 +81,7 @@ public class FrmCoupon extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==this.menuItem_add){
-            DlgAddNet dlg=new DlgAddNet(this,"添加网点",true);
+            DlgAddCoupon dlg=new DlgAddCoupon(this,"添加优惠券",true);
             dlg.setVisible(true);
             this.reloadCouponTable();
         } else if(e.getSource()==this.menuItem_delete){
